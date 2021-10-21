@@ -1,0 +1,844 @@
+#include <iostream>
+#include <time.h> // incluir a biblioteca que será usada no decorrer do codigo
+using namespace std;
+int main () {
+	setlocale(LC_ALL,"Portuguese");
+
+    int escolha, palavra, tentativas, acertos, l1, l2, l3, l4, l5, l6; // declaração das variaveis
+    char letra, letra1, letra2, letra3, letra4, letra5, letra6; // variavel tipo char para armazenar um único valor "letra"
+
+        cout << "JOGO DA FORCA" << endl << endl;
+        cout << "Digite 1 para JOGAR.\nDigite 2 para SOBRE.\nDigite qualquer outra tecla para SAIR.\n-> "; // opções do jogador
+        cin >> escolha; // cin para ler a escolha feita pelo jogador
+
+        do { // faz parte do laço de repetição while. repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+            switch (escolha){ // rodar a variavel escolha
+            case 1: // caso o jogador escolha a opção 1 (JOGAR), executará essa função
+                cout << "\nOk, vamos lá." << endl << endl;
+
+                tentativas = 10; // quantidade de tentativas
+                acertos = 0; // inicialmente como zero
+                letra1 ='_'; // underline que será ocupado por letras no decorrer do jogo
+                letra2 ='_';
+                letra3 ='_';
+                letra4 ='_';
+                letra5 ='_';
+                letra6 ='_';
+                l1 = 0; // letras recebem o valor de 0 inicialmente
+                l2 = 0;
+                l3 = 0;
+                l4 = 0;
+                l5 = 0;
+                l6 = 0;
+
+
+                srand (time(NULL)); //A função dele é que acompanhado do rand, ele permite que o número aleátorio não se repita.
+                palavra = rand() % 10; // escolhe 1 numero aleatorio de 0 a 9
+
+                switch(palavra){ // switch para ler a palavra sorteada e assim direcionar para as cases
+
+                    case 0: // caso seja sorteado a palavra de numero 0 "SACOLA" sera efetuado essa case
+
+                     do{ // faz parte do laço de repetição while. repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+                        system("cls"); //permite limpar a tela do console.
+
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl; // exibe a quantidade de tentativas restantes em cada rodada
+                        cout << "Número de acertos: " << acertos << endl; // barra T é tabulação para estetica
+                        cout << "\nDigite uma letra: "; // solicita que o jogador digite uma letra
+                        cin >> letra; // lê a letra escolhida
+
+                            if (letra =='s' || letra =='S' || letra =='a' || letra =='A' || letra =='c' || letra =='C' || letra =='o' || letra =='O' || letra =='l' || letra =='L') { // se houver as letras descritas nessa linha, então entra nesse if
+                                cout << "Boa escolha, há essa letra" << endl; // informa ao jogador que existe essa letra
+
+                                if ( letra =='s' || letra =='S'){ // se a letra for S
+                                    letra1 ='S'; // substitui a letra S em seu devido lugar
+
+                                    if (l1>0){ // l1 inicialmente definido como 0, caso passe mais de uma vez por essa linha, tera valor maior que 0 então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--; // diminui a quantidade de acertos que seriam adicionados pelo fato do S exirtir
+                                    }
+                                    l1++; // adiciona + 1 à letra 1
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra for A
+                                    letra2 ='A'; // recebe a letra A na posição 2
+                                    letra6 ='A'; // recebe a letra A na posição 6
+
+                                    if (l2>0){ // caso já tenha sido selecionada essa letra, nao terá mais valor de 0, então entrará nesse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--; // só diminui acertos e não tentativas
+                                    }
+                                    l2++; // adiciona 1 na letra 2
+                                    l6++; // adiciona 1 na letra 6
+
+                                }
+                                if (letra =='c' || letra =='C'){ // se for selecionada a letra C
+                                    letra3 ='C'; // exibirá a letra C em sua posição
+
+                                    if (l3>0){ // caso a letra C já tenha sido digitada, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--; // diminui os acertos adicionados no ato da escolha da letra
+                                    }
+                                    l3++; // adiciona 1 na letra de posição 3
+                                }
+                                if (letra =='o' || letra =='O'){ // se for selecionado a letra O
+                                    letra4 ='O'; // posiciona a letra O em seu devido lugar
+
+                                    if (l4>0){ // caso a letra O já tenha sido digitada, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--; // diminui os acertos adicionados no ato da escolha da letra
+                                    }
+                                    l4++; // adiciona 1 na letra 4
+                                }
+                                if (letra =='l' || letra =='L'){ // se for selecionado a letra L
+                                    letra5 ='L'; // posiciona a letra L em seu devido lugar
+
+                                    if (l5>0){ // caso a letra L já tenha sido digitada, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--; // diminui os acertos adicionados no ato da escolha da letra
+                                    }
+                                    l5++; // adiciona 1 na letra 5
+                                }
+                            acertos++; // adiciona os acertos de cada letra que estao dentro de todos esses ifs
+
+                            }else{ // se nao houver nenhuma letra correta, ou seja, nao entre em nenhum comando if, executará o else
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui todas as tentativas devifinas inicialmente como 10, de acordo com os ifs e o else
+
+                        system("pause"); //Para pausar o console. exibe "Pressione qualquer tecla para continuar. . ."
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break; //quebra a função switch case 0 (SACOLA).
+
+					case 1: // caso seja sorteado a palavra de numero 1 "RECAIR" será efetuado essa case
+
+                    do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+                    system("cls"); //permite limpar a tela do console.
+
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl; // exibe a quantidade de tentativas restantes
+                        cout << "Número de acertos: " << acertos << endl; // exibe o numero de acertos
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra; // lê a letra selecionada pelo jogador
+
+                            if (letra =='r' || letra =='R' || letra =='e' || letra =='E' || letra =='c' || letra =='C' || letra =='a' || letra =='A' || letra =='i' || letra =='I') { // se a letra selecionada tiver uma dessas opções então executará esse if
+
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='r' || letra =='R'){ // observe que o jogador pode digitar a letra maiúscula ou minúscula
+                                    letra1 ='R'; // letra 1 será substituida por R
+                                    letra6 ='R'; // letra 6 será substituida por R
+
+                                    if (l1>0){ // l1 inicialmente definido como 0, caso passe mais de uma vez por essa linha, tera valor maior que 0 então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--; // diminuir os acertos por conta da repetição da letra
+                                    }
+                                    l1++; // adiciona mais 1 para l1
+                                    l6++;
+                                    acertos++; // soma os acertos das letras
+                                }
+                                if (letra =='e' || letra =='E'){ // se for selecionado a letra E, entao executará esse if
+                                    letra2 ='E';
+
+                                    if (l2>0){ // l2 inicialmente definido como 0, caso passe mais de uma vez por essa linha, tera valor maior que 0 então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra =='c' || letra =='C'){ // se a letra selecionada for C, então executará esse if
+                                    letra3 ='C'; // letra C será substituida em seu devido lugar
+
+                                    if (l3>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra4 ='A';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                }
+                                if (letra =='i' || letra =='I'){ // se a letra I for selecionada, entao executará esse if
+                                    letra5 ='I';
+
+                                    if (l5>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                acertos++;
+
+                            }else{ // caso a letra escolhida pelo jogador nao esteja no if, então executará esse else
+                                cout << "Infelizmente, não há essa letra" << endl; // exibirá para o jogador que ele não aceitou
+                            }
+                        tentativas--; // cada rolada o jogador perde uma tentativa, independente da letra escolhida conforme if e else
+
+                        system("pause"); //Para pausar o console. exibe "Pressione qualquer tecla para continuar. . ."
+
+                    }while (tentativas>0 && acertos<6); // se o jogador chegar a tentativa 0 ou aceitar as 6 letras, acabou o laço e logo vem o break para quebrar a case e voltar apara o menu
+					break;
+
+					case 2: // caso seja sorteado a palavra de numero 2 "LARICA" será efetuado essa case
+
+                    do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+                        system("cls"); //permite limpar a tela do console.
+
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl; // exibe a quantidade de tentativas restantes em cada rodada
+                        cout << "Número de acertos: " << acertos << endl; // exibe para o jogador os acertos
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra; // lê a letra escolhida pelo jogador
+
+                            if (letra =='l' || letra =='L' || letra =='a' || letra =='A' || letra =='r' || letra =='R' || letra =='i' || letra =='I' || letra =='c' || letra =='C') {
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='l' || letra =='L'){ // se a letra for L, então executará esse if
+                                    letra1='L';
+
+                                    if (l1>0){ // caso a letra L já tenha sido digitada, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++; // soma a quantidade de passagens por essa letra, para que ela nao se repita
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra selecionada pelo jogador for A, executará esse if
+                                    letra2 ='A';
+                                    letra6 ='A'; // o underline definido no inicio será substituido pela letra A, em seu devido lugar
+
+                                    if (l2>0){ // caso a letra A já tenha sido digitada, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--; // diminui os acertos para que nao tenha acertos repetidos caso seja selecionado 2x a mesma letra
+                                    }
+                                    l2++; // adiciona 1 para l2
+                                    l6++; // adiciona 1 para l6
+                                    acertos++;
+
+                                }
+                                if (letra =='r' || letra =='R'){ // se a letra selecionada for R, então executará esse if
+                                    letra3 ='R';
+
+                                    if (l3>0){ // caso a letra R já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='i' || letra =='I'){ // se a letra I for digitada entao executará esse if
+                                    letra4 ='I';
+
+                                    if (l4>0){ // caso a letra I já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                }
+                                if (letra =='c' || letra =='C'){ // se a letra C for digitada entao executará esse if
+                                    letra5 ='C';
+
+                                    if (l5>0){ // caso a letra C já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                acertos++; // soma todos os acertos descritos nos ifs
+
+                            }else{ // caso a letra escolhida pelo jogador nao esteja no if, então executará esse else
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--;
+
+                        system("pause"); //Para pausar o console. exibe "Pressione qualquer tecla para continuar. . ."
+
+                    }while (tentativas>0 && acertos<6); // se o jogador chegar a tentativa 0 ou aceitar as 6 letras, acabou o laço e logo vem o break para quebrar a case e voltar apara o menu
+					break;
+
+					case 3: // caso seja sorteado a palavra de numero 3 "RAPOSA" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+                        system("cls"); //permite limpar a tela do console.
+
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='r' || letra =='R' || letra =='a' || letra =='A' || letra =='p' || letra =='P' || letra =='o' || letra =='O' || letra =='s' || letra =='S') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl; // exibirá essa mensagem ao jogador
+
+                                if (letra =='r' || letra =='R'){ // se a letra selecionada pelo jogador for R, executará esse if
+                                    letra1 ='R';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a escolha do jogador for A, então executrá esse if
+                                    letra2 ='A';
+                                    letra6 ='A'; // letra6 recebe A
+
+                                    if (l2>0){ // esse if funciona para que as letras não se repitam
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                    l6++;
+                                    acertos++;
+                                }
+                                if (letra =='p' || letra =='P'){ // se a letra P for selecionada, então esse if será executado
+                                    letra3 ='P'; // letra P será colocada em seu lugar
+
+                                    if (l3>0){ // para que as letras não se repitam, que os acertos não se dupliquem
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl; // exibe ao jogador essa mensagem toda vez que ele repete a letra
+                                    acertos--;
+                                    }
+                                    l3++; // soma 1 a l3
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada pelo jogador for O, então esse if será executado
+                                    letra4 ='O';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++; // l4 recebe +1, para que a letra tenha um valor diferente de 0 e seja executado o if acima caso ela se repita
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra5 ='S';
+
+                                    if (l5>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                acertos++; // quantidade de acertos durante a tentativa de acertar a palavra
+
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 4: // caso seja sorteado a palavra de numero 4 "CARROS" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='c' || letra =='C' || letra =='a' || letra =='A' || letra =='r' || letra =='R' || letra =='o' || letra =='O' || letra =='s' || letra =='S') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='c' || letra =='C'){ // se a letra selecionada for C, então executará esse if
+                                    letra1 ='C';
+
+                                    if (l1>0){ // caso a letra C já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra2 ='A';
+
+                                    if (l2>0){ // caso a letra A já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra =='r' || letra =='R'){ // se a letra selecionada pelo jogador for R, executará esse if
+                                    letra3 ='R';
+                                    letra4 ='R';
+
+                                    if (l3>0){ // caso a letra R já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                    l4++;
+                                    acertos++;
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada pelo jogador for O, então esse if será executado
+                                    letra5 ='O';
+
+                                    if (l5>0){ // caso a letra O já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra6 ='S';
+
+                                    if (l6>0){ // caso a letra S já tenha sido digitada anteriormente, não terá mais valor 0, então executará esse if
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++; // adiciona 1 a cada letra acertada
+
+                            }else{ // se alguma letra for selecionada que não esteja no if, fará esse comando
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 5: // caso seja sorteado a palavra de numero 5 "ESCOLA" será efetuado essa case
+
+                    do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='e' || letra =='E' || letra =='s' || letra =='S' || letra =='c' || letra =='C' || letra =='o' || letra =='O' || letra =='l' || letra =='L' || letra =='a' || letra =='A') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='e' || letra =='E'){
+                                    letra1 ='E';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra2 ='S';
+
+                                    if (l2>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra =='c' || letra =='C'){ // se a letra selecionada for C, então executará esse if
+                                    letra3 ='C';
+
+                                    if (l3>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada pelo jogador for O, então esse if será executado
+                                    letra4 ='O';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                }
+                                if (letra =='l' || letra =='L'){
+                                    letra5 ='L';
+
+                                    if (l5>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra6 ='A';
+
+                                    if (l6>0){
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++;
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 6: // caso seja sorteado a palavra de numero 6 "PRESSA" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='p' || letra =='P' || letra =='r' || letra =='R' || letra =='e' || letra =='E' || letra =='s' ||letra=='S'||letra=='a'||letra=='A') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout<<"Boa escolha, há essa letra"<<endl;
+
+                                if (letra =='p' || letra =='P'){
+                                    letra1 ='P';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='r' || letra =='R'){ // se a letra selecionada pelo jogador for R, executará esse if
+                                    letra2 ='R';
+
+                                    if (l2>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra=='e'||letra=='E'){
+                                    letra3='E';
+
+                                    if (l3>0){
+                                    cout<<"Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa."<<endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra4 ='S';
+                                    letra5 ='S';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                    l5++;
+                                    acertos++;
+                                }
+                                if (letra == 'a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra6 ='A';
+
+                                    if (l6>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++;
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 7: // caso seja sorteado a palavra de numero 7 "ESPOSA" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='e' || letra =='E' || letra =='s' || letra =='S' || letra =='p' || letra =='P' || letra =='o' || letra =='O' || letra =='a' || letra =='A') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='e' || letra =='E'){
+                                    letra1 ='E';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra2 ='S';
+                                    letra5 ='S';
+
+                                    if (l2>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                    l5++;
+                                    acertos++;
+                                }
+                                if (letra =='p' || letra =='P'){
+                                    letra3 ='P';
+
+                                    if (l3>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada pelo jogador for O, então esse if será executado
+                                    letra4 ='O';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra6 ='A';
+
+                                    if (l6>0){
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++;
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 8: // caso seja sorteado a palavra de numero 8 "ACESSO" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: "; // solicita que o usuario digite uma letra
+                        cin >> letra; // lê a letra digitada pelo jogador
+
+                            if (letra =='a' || letra =='A' || letra =='c' || letra =='C' || letra =='e' || letra =='E' || letra =='s' || letra =='S' || letra =='o' || letra =='O') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra1 ='A';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='c' || letra =='C'){ // se a letra selecionada for C, então executará esse if
+                                    letra2 ='C';
+
+                                    if (l2>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra =='e' || letra =='E'){
+                                    letra3 ='E';
+
+                                    if (l3>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='s' || letra =='S'){
+                                    letra4 ='S';
+                                    letra5 ='S';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                    l5++;
+                                    acertos++;
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada pelo jogador for O, então esse if será executado
+                                    letra6 ='O';
+
+                                    if (l6>0){
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++;
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+
+					case 9: // caso seja sorteado a palavra de numero 9 "SOCIAL" será efetuado essa case
+
+					do{ // repetir essa palavra até que ela seja acertada ou que termine todas as tentativas
+
+                        system("cls");
+                        cout << "\tA palavra é\t" << letra1 << "\t" << letra2 << "\t" << letra3 << "\t" << letra4 << "\t" << letra5 << "\t" << letra6 << endl << endl; // letras que inicialmente recebem o underline, e serão substituida cada letra em seu lugar conforme o jogador acerta
+                        cout << "Tentativas restantes: " << tentativas << endl;
+                        cout << "Número de acertos: " << acertos << endl;
+                        cout << "\nDigite uma letra: ";
+                        cin >> letra;
+
+                            if (letra =='s' || letra =='S' || letra =='o' || letra =='O' || letra =='c' || letra =='C' || letra =='i' || letra =='I' || letra =='a' || letra =='A' || letra =='l' || letra =='L') { // diminui as tentativas cada vez que o jogador seleciona uma letra, esteja ela no if ou else
+                                cout << "Boa escolha, há essa letra" << endl;
+
+                                if (letra =='s' || letra =='S'){
+                                    letra1 ='S';
+
+                                    if (l1>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l1++;
+                                }
+                                if (letra =='o' || letra =='O'){ // se a letra selecionada for O, então executará esse comando
+                                    letra2 ='O';
+
+                                    if (l2>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l2++;
+                                }
+                                if (letra =='c' || letra =='C'){ // se a letra selecionada for C, então executará esse if
+                                    letra3 ='C';
+
+                                    if (l3>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l3++;
+                                }
+                                if (letra =='i' || letra =='I'){
+                                    letra4 ='I';
+
+                                    if (l4>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l4++;
+                                }
+                                if (letra =='a' || letra =='A'){ // se a letra A for selecionada, executará esse if
+                                    letra5 ='A';
+
+                                    if (l5>0){
+                                    cout << "Preste atenção, essa letra já foi escolhida, você perdeu 1 tentativa." << endl;
+                                    acertos--;
+                                    }
+                                    l5++;
+                                }
+                                if (letra =='l' || letra =='L'){
+                                    letra6 ='L';
+
+                                    if (l6>0){
+                                    acertos--;
+                                    }
+                                    l6++;
+                                }
+                                acertos++; // soma os acertos do jogador
+                            }else{
+                                cout << "Infelizmente, não há essa letra" << endl;
+                            }
+                        tentativas--; // diminui a quantidade de tentativas cada vez que o jogador seleciona uma letra
+                        system("pause");
+
+                    }while (tentativas>0 && acertos<6); // while em conjunto com do para repetir a palavra até que ainda tenha tentativas ou que o jogador acerte todas as letras
+					break;
+					}
+
+                cout << endl << "Fim de Jogo."; // fim do jogo quando as alternativas esgotam ou quando o jogador acerta todas as letras
+
+                    if (l1>0 && l2>0 && l3>0 && l4>0 && l5>0 && l6>0){ // se todas as letras receberem pelo menos 1 valor maior que 0, significa que o jogador acertou todas as letras e assim ganhou o jogo
+                        cout << " Você Ganhou!" << endl; // exibe para o jogador que ele ganhou
+
+                        if (palavra==0){ // se a palavra que o jogador acertou for a numero 0, então exibirá a resposta
+                            cout << "SACOLA era a resposta." << endl;
+                        }
+                        if (palavra==1){ // se a palavra que o jogador acertou for a numero 1, então exibirá a resposta
+                            cout << "RECAIR era a resposta." << endl;
+                        }
+                        if (palavra==2){ // se a palavra que o jogador acertou for a numero 2, então exibirá a resposta
+                            cout << "LARICA era a resposta." << endl;
+                        }
+                        if (palavra==3){ // se a palavra que o jogador acertou for a numero 3, então exibirá a resposta
+                            cout << "RAPOSA era a resposta." << endl;
+                        }
+                        if (palavra==4){ // se a palavra que o jogador acertou for a numero 4, então exibirá a resposta
+                            cout << "CARROS era a resposta." << endl;
+                        }
+                        if (palavra==5){ // se a palavra que o jogador acertou for a numero 5, então exibirá a resposta
+                            cout << "ESCOLA era a resposta." << endl;
+                        }
+                        if (palavra==6){ // se a palavra que o jogador acertou for a numero 6, então exibirá a resposta
+                            cout << "PRESSA era a resposta." << endl;
+                        }
+                        if (palavra==7){ // se a palavra que o jogador acertou for a numero 7, então exibirá a resposta
+                            cout << "ESPOSA era a resposta." << endl;
+                        }
+                        if (palavra==8){ // se a palavra que o jogador acertou for a numero 8, então exibirá a resposta
+                            cout << "ACESSO era a resposta." << endl;
+                        }
+                        if (palavra==9){ // se a palavra que o jogador acertou for a numero 9, então exibirá a resposta
+                            cout << "SOCIAL era a resposta." << endl;
+                        }
+                    }else{ // caso o jogador não acerte as palavras descritas nos ifs acima, então exibirá essa mensagem abaixo
+                        cout << " As tentativas esgotaram. Você Perdeu!" << endl;
+                    }
+                system("pause");
+                system("cls");
+                break;
+
+            case 2: // case no menu, o usuario selecione a opção 2 (SOBRE), executará esse comando
+
+                system("cls"); // para limpar a tela
+                cout << "\nOlá, seja bem vindo ao Jogo da Forca, trabalho elaborado pelo professor Rafael Ballottin, na disciplina de Algoritmos e Programação, curso de Ciências da Computação na Univali, feito em grupo pelos alunos Arthur Moser, Nathália Greiffo e Talita Fortuna no mês de outubro de 2021. \nRegras: Palavras serão geradas aleatoriamente contendo 6 letras, o jogador deve adivinhar as palavras ou as letras que a formam. Somente uma letra por vez no momento solicitado, cada letra acertada será mostrado na tela, cada erro será descontado uma tentativa, jogador terá 10 tentativas, após o fim da partida será retornado ao menu do jogo. \nBOM JOGO." << endl << endl;
+                system("pause"); // pausar o console
+                system("cls");
+                break; // fechar essa case e voltará ao menu
+                }
+
+    }while(escolha==1||escolha==2); // faz ligação com o primeiro "do" do codigo, vai rodar enquanto a escolha for 1 ou 2, se nao seja selecionada nenhuma dessas opções, então encerará o jogo
+    cout << "Que pena, volte outra hora.";
+    return 0;
+}
