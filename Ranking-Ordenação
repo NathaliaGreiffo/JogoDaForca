@@ -1,0 +1,206 @@
+#include <iostream>
+#include <locale.h>
+#include <time.h>
+#include <string>
+#include <algorithm>
+
+#define tamanho 1000
+using namespace std;
+
+struct JOGADORES
+{
+    int id = 0;
+    string nome;
+    int pontuacao;
+};
+
+void ImprimirJogadores(JOGADORES jogadores) {
+    cout << "Nome: " << jogadores.nome << " - Pontuação: " << jogadores.pontuacao << endl;
+}
+
+JOGADORES lerJogadores(int i) {
+    JOGADORES jogadores;
+    jogadores.id = i;
+    string nome = "Jogador";
+    jogadores.nome = nome + to_string(jogadores.id);
+    jogadores.pontuacao = rand() % 1000000;
+
+    return jogadores;
+}
+
+//BUBBLE SORT melhoresPontuacoes100
+
+void bubbleSort(JOGADORES* jogadores) {
+    bool ordenado = false;
+    int j = 0;
+    int tempPONTUACAO;
+    string tempNOME;
+    int tempID;
+    while (!ordenado) {
+        ordenado = true;
+        j++;
+        for (int i = 0; i < tamanho - j; i++) {
+            if (jogadores[i].pontuacao > jogadores[i + 1].pontuacao) {
+                tempPONTUACAO = jogadores[i].pontuacao;
+                tempNOME = jogadores[i].nome;
+                tempID = jogadores[i].id;
+                jogadores[i] = jogadores[i + 1];
+                jogadores[i + 1].pontuacao = tempPONTUACAO;
+                jogadores[i + 1].nome = tempNOME;
+                jogadores[i + 1].id = tempID;
+                ordenado = false;
+            }
+        }
+    }
+}
+
+// SHELL SORT exibirJogadores EM ORDEM ALFABETICA
+
+int shellSort(JOGADORES jogadores[], int n)
+{
+
+    for (int gap = n / 2; gap > 0; gap /= 2)
+    {
+        for (int i = gap; i < n; i += 1)
+        {
+            int tempID = jogadores[i].id;
+            string tempNOME = jogadores[i].nome;
+            int tempPONTUACAO = jogadores[i].pontuacao;
+
+            int j;
+            for (j = i; j >= gap && jogadores[j - gap].id > tempID; j -= gap) {
+                jogadores[j].id = jogadores[j - gap].id;
+                jogadores[j].nome = jogadores[j - gap].nome;
+                jogadores[j].pontuacao = jogadores[j - gap].pontuacao;
+            }
+
+
+            jogadores[j].id = tempID;
+            jogadores[j].nome = tempNOME;
+            jogadores[j].pontuacao = tempPONTUACAO;
+        }
+    }
+    return 0;
+}
+
+// QUICK SORT melhoresPontuacoes100
+
+int particao(JOGADORES jogadores[], int esq, int dir) {
+    int tempPONTUACAO; //troca de posicoes
+    string tempNOME;
+    int tempID;
+    int cont = esq;
+
+    for (int i = esq + 1; i <= dir; i++) {
+
+        if (jogadores[i].pontuacao < jogadores[esq].pontuacao) {
+            cont++;
+            tempPONTUACAO = jogadores[i].pontuacao;
+            tempNOME = jogadores[i].nome;
+            tempID = jogadores[i].id;
+
+            jogadores[i].pontuacao = jogadores[cont].pontuacao;
+            jogadores[i].nome = jogadores[cont].nome;
+            jogadores[i].id = jogadores[cont].id;
+
+            jogadores[cont].pontuacao = tempPONTUACAO;
+            jogadores[cont].nome = tempNOME;
+            jogadores[cont].id = tempID;
+        }
+    }
+
+    tempPONTUACAO = jogadores[esq].pontuacao;
+    tempNOME = jogadores[esq].nome;
+    tempID = jogadores[esq].id;
+
+    jogadores[esq].pontuacao = jogadores[cont].pontuacao;
+    jogadores[esq].nome = jogadores[cont].nome;
+    jogadores[esq].id = jogadores[cont].id;
+
+    jogadores[cont].pontuacao = tempPONTUACAO;
+    jogadores[cont].nome = tempNOME;
+    jogadores[cont].id = tempID;
+
+    return cont;
+}
+
+void quickSort(JOGADORES jogadores[], int esq, int dir) {
+    int pos;
+    if (esq < dir) {
+        pos = particao(jogadores, esq, dir);
+        quickSort(jogadores, esq, pos - 1);
+        quickSort(jogadores, pos + 1, dir);
+    }
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+    srand(time(NULL));
+
+    JOGADORES jogadores[tamanho];
+    int menu = 0;
+
+    do {
+        cout << "TRABALHO 3.1" << endl;
+        cout << "Alunos: Arthur Moser, Bernardo Magueta e Nathália Greiffo" << endl << endl;
+        cout << "1 - GERAR " << tamanho << " JOGADORES" << endl;
+        cout << "2 - ORDENAR TOP 10 pontuação" << endl;
+        cout << "3 - ORDENAR TOP 100 pontuação" << endl;
+        cout << "4 - ORDENAR EM ORDEM ALFABETICA" << endl;
+        cin >> menu;
+
+        switch (menu) {
+        case 1:
+            system("cls");
+            cout << "GERADO" << endl << endl;
+            for (int i = 0; i < tamanho; i++) {
+                jogadores[i] = lerJogadores(i);
+            }
+            cout << endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 2:
+            cout << endl << "BubbleSort para ordenar TOP 10" << endl << endl;
+            bubbleSort(jogadores);
+
+            for (int i = tamanho - 10; i < tamanho; i++) {
+                ImprimirJogadores(jogadores[i]);
+            }
+            cout << endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 3:
+            cout << "\nQuickSort para ordenar TOP 100" << endl << endl;
+            quickSort(jogadores, 0, tamanho - 1);
+
+            for (int i = tamanho - 100; i < tamanho; i++) {
+                ImprimirJogadores(jogadores[i]);
+            }
+            cout << endl;
+            system("pause");
+            system("cls");
+            break;
+
+        case 4:
+            cout << "ShellSort para ordenar em ordem alfabetica" << endl << endl;
+            shellSort(jogadores, tamanho);
+
+            for (int i = 0; i < tamanho; i++) {
+                ImprimirJogadores(jogadores[i]);
+            }
+            cout << endl;
+            system("pause");
+            system("cls");
+            break;
+
+        default:
+            break;
+        }
+        system("cls");
+    } while (menu == 1 || menu == 2 || menu == 3 || menu == 4);
+}
