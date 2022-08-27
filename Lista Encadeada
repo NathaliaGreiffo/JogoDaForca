@@ -1,0 +1,454 @@
+ShuDuke
+#3346
+
+ShuDuke
+ iniciou uma chamada que durou poucos segundos.
+ — 11/06/2022
+ArthurM7 — 11/06/2022
+vaia no code gang
+vai*
+ShuDuke — 02/08/2022
+https://discord.gg/XqPjXb8b
+ArthurM7 — 21/08/2022
+#include <iostream>
+
+using namespace std;
+
+struct TJogador {   //struct q armazena pontuacao e game dos jogadores
+    int game;   //int game do jogador
+Expandir
+message.txt
+20 KB
+esse codigo so tem lista estatica, depois dá uma estudada pra tentar entender oq eu fiz ^-^
+fiz bastante comentario, eu nao entendi direito oq o prof pediu entao eu fiz la na main duas versoes, uma com menu e outra sem menu
+ArthurM7 — 22/08/2022
+#include <iostream>
+
+using namespace std;
+
+struct TJogador {   //struct q armazena pontuacao e game dos jogadores
+    int game;   //int game do jogador
+Expandir
+message.txt
+9 KB
+ShuDuke — 22/08/2022
+// garantir que seja deslocado a memoria do NEW 
+// mas como?
+
+remover_inicio(){
+    0) copia do dado a remover e da caixa  // T copia = L.inicio-> dado; // TElemento* apagar= l.inicio;
+    1) atualizar inicio // l.inicio=apagar->proximo;
+Expandir
+Encadeada.txt
+2 KB
+ShuDuke — 22/08/2022
+#include <iostream>
+
+using namespace std;
+
+struct TJogador {   //struct q armazena pontuacao e game dos jogadores
+    int game;   //int game do jogador
+Expandir
+message.txt
+14 KB
+ShuDuke — 24/08/2022
+Migo, não ta totalmente pronta, falta bastante coisa ainda. Mas como eu to com duvida em como fazer o que falta, eu vou ver se acho o Edu amanha pra tirar essas minhas duvidas e conseguir terminar a encadeada simples e começar a dupla
+#include <iostream>
+
+using namespace std;
+
+// lista encadeada
+
+Expandir
+message.txt
+5 KB
+ShuDuke — Ontem às 19:47
+#include <iostream>
+
+using namespace std;
+
+// lista encadeada
+
+Expandir
+message.txt
+7 KB
+ArthurM7 — Ontem às 21:28
+#include <iostream>
+
+using namespace std;
+
+// lista encadeada
+
+template<typename T>
+struct TJogadorEncadeadoSimples{
+    T dado;
+    TJogadorEncadeadoSimples<T>* proximo;
+};
+
+template<typename T>
+struct TListaEncadeadaSimples{
+    TJogadorEncadeadoSimples<T>* inicio;
+};
+
+int menuEncadeadaS(){
+
+    int opcao;
+
+    cout << "Digite a opcao desejada:" << endl;
+    cout << "1 - Iniciaizar lista" << endl;
+    cout << "2 - Inserir inicio" << endl;
+    cout << "3 - Inserir fim" << endl;
+    cout << "4 - Inserir posicao" << endl;
+    cout << "5 - Remover inicio" << endl;
+    cout << "6 - Remover fim" << endl;
+    cout << "7 - Remover posicao" << endl;
+    cout << "8 - Obter item" << endl;
+    cout << "9 - Descobrir indice" << endl;
+    cout << "10 - Imprimir lista" << endl;
+    cin >> opcao;
+
+        return opcao;
+}
+
+template<typename T>
+void inicializar_lista_ES(TListaEncadeadaSimples<T>& ListaES){  // para voltar zerado e nao com lixo de memoria
+   ListaES.inicio = nullptr;
+}
+
+template<typename T>
+void imprimir_lista_ES(TListaEncadeadaSimples<T>& ListaES){  // navegador passando por todos os elementos e imprimindo cada um
+
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    if (nav != nullptr){
+        cout << " | ";
+        while(nav->proximo != nullptr){
+            cout << nav->dado << " | ";
+            nav = nav->proximo;
+        }
+        cout << nav->dado << " | " << endl;
+    }
+    else{
+        cout << "A lista escontra-se vazia" <<endl;
+    }
+}
+
+template<typename T>
+void inserir_posicao_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado, int pos){
+
+    if (pos<0){
+        throw "Invalid Index";
+    }
+
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    TJogadorEncadeadoSimples<T>* novo = new TJogadorEncadeadoSimples<T>;
+    novo->dado = dado;
+
+    if(pos == 0){
+        novo->proximo = ListaES.inicio;
+        ListaES.inicio = novo;
+    }
+    else if(ListaES.inicio != nullptr){
+        for(int i = 0; i < pos-1; i++){
+            nav = nav->proximo;
+            if(nav == nullptr){
+                throw "Invalid Index";
+            }
+        }
+        novo->proximo = nav->proximo;
+        nav->proximo = novo;
+    }
+
+    else{                                   // Aqui vai cair na lista quando quiserem adicionar em alguma posição que não é a inicial
+        throw "Invalid Index";
+    }
+}
+
+template<typename T>
+void inserir_inicio_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado){
+    inserir_posicao_na_lista_ES(ListaES, dado, 0);
+}
+
+template<typename T>
+void inserir_fim_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado){
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    TJogadorEncadeadoSimples<T>* novo = new TJogadorEncadeadoSimples<T>;
+
+... (173 linhas)
+Recolher
+message.txt
+8 KB
+﻿
+#include <iostream>
+
+using namespace std;
+
+// lista encadeada
+
+template<typename T>
+struct TJogadorEncadeadoSimples{
+    T dado;
+    TJogadorEncadeadoSimples<T>* proximo;
+};
+
+template<typename T>
+struct TListaEncadeadaSimples{
+    TJogadorEncadeadoSimples<T>* inicio;
+};
+
+int menuEncadeadaS(){
+
+    int opcao;
+
+    cout << "Digite a opcao desejada:" << endl;
+    cout << "1 - Iniciaizar lista" << endl;
+    cout << "2 - Inserir inicio" << endl;
+    cout << "3 - Inserir fim" << endl;
+    cout << "4 - Inserir posicao" << endl;
+    cout << "5 - Remover inicio" << endl;
+    cout << "6 - Remover fim" << endl;
+    cout << "7 - Remover posicao" << endl;
+    cout << "8 - Obter item" << endl;
+    cout << "9 - Descobrir indice" << endl;
+    cout << "10 - Imprimir lista" << endl;
+    cin >> opcao;
+
+        return opcao;
+}
+
+template<typename T>
+void inicializar_lista_ES(TListaEncadeadaSimples<T>& ListaES){  // para voltar zerado e nao com lixo de memoria
+   ListaES.inicio = nullptr;
+}
+
+template<typename T>
+void imprimir_lista_ES(TListaEncadeadaSimples<T>& ListaES){  // navegador passando por todos os elementos e imprimindo cada um
+
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    if (nav != nullptr){
+        cout << " | ";
+        while(nav->proximo != nullptr){
+            cout << nav->dado << " | ";
+            nav = nav->proximo;
+        }
+        cout << nav->dado << " | " << endl;
+    }
+    else{
+        cout << "A lista escontra-se vazia" <<endl;
+    }
+}
+
+template<typename T>
+void inserir_posicao_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado, int pos){
+
+    if (pos<0){
+        throw "Invalid Index";
+    }
+
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    TJogadorEncadeadoSimples<T>* novo = new TJogadorEncadeadoSimples<T>;
+    novo->dado = dado;
+
+    if(pos == 0){
+        novo->proximo = ListaES.inicio;
+        ListaES.inicio = novo;
+    }
+    else if(ListaES.inicio != nullptr){
+        for(int i = 0; i < pos-1; i++){
+            nav = nav->proximo;
+            if(nav == nullptr){
+                throw "Invalid Index";
+            }
+        }
+        novo->proximo = nav->proximo;
+        nav->proximo = novo;
+    }
+
+    else{                                   // Aqui vai cair na lista quando quiserem adicionar em alguma posição que não é a inicial
+        throw "Invalid Index";
+    }
+}
+
+template<typename T>
+void inserir_inicio_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado){
+    inserir_posicao_na_lista_ES(ListaES, dado, 0);
+}
+
+template<typename T>
+void inserir_fim_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, T dado){
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    TJogadorEncadeadoSimples<T>* novo = new TJogadorEncadeadoSimples<T>;
+
+    //TJogadorEncadeadoSimples<T>* novo;
+    novo->dado = dado;
+    novo->proximo = nullptr;
+    if(ListaES.inicio == nullptr){
+        ListaES.inicio = novo;
+    }
+    else {
+       TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+       while (nav->proximo != nullptr){
+           nav = nav->proximo;
+       }
+       nav->proximo = novo;
+    }
+
+}
+
+template<typename T>
+void remover_inicio_na_lista_ES(TListaEncadeadaSimples<T>& ListaES){
+    if(ListaES.inicio == nullptr){
+        throw "List Underflow";
+    }
+    TJogadorEncadeadoSimples<T>* apagar = ListaES.inicio;
+    if(ListaES.inicio->proximo == nullptr){
+        ListaES.inicio = nullptr;
+    }
+    else{
+        ListaES.inicio = ListaES.inicio->proximo;
+    }
+    delete apagar;
+}
+
+template<typename T>
+void remover_fim_na_lista_ES(TListaEncadeadaSimples<T>& ListaES){
+    if (ListaES.inicio == nullptr) {
+        throw "List Underflow";
+    }
+    if (ListaES.inicio->proximo == nullptr) {
+        remover_inicio_na_lista_ES(ListaES);
+    }
+    else {
+        TJogadorEncadeadoSimples<T>* apagar = ListaES.inicio;
+        TJogadorEncadeadoSimples<T>* nav = nullptr;
+
+        while (apagar->proximo != nullptr) {
+            nav = apagar;
+            apagar = apagar->proximo;
+        }
+        nav->proximo = nullptr;
+        delete apagar;
+    }
+}
+
+template<typename T>
+void remover_posicao_na_lista_ES(TListaEncadeadaSimples<T>& ListaES, int pos){
+    TJogadorEncadeadoSimples<T>* apagar = ListaES.inicio; //Atual
+    TJogadorEncadeadoSimples<T>* nav = nullptr; //Anterior
+
+        if (pos < 0 || ListaES.inicio == nullptr) {
+            throw "Invalid Index";
+        }
+        if (pos == 0) {
+            remover_inicio_na_lista_ES(ListaES);
+        }
+        else {
+            int contPosicao = 0;
+            while( apagar != nullptr && contPosicao < pos ) {
+                nav = apagar;
+                apagar = apagar->proximo;
+                contPosicao++;
+            }
+
+            if(apagar == nullptr) {
+                cout << "Nao posso apagar";
+            } else {
+                if( apagar->proximo == nullptr ) { // Eh o ultimo
+                    remover_fim_na_lista_ES(ListaES);
+                } else { // Nao eh o ultimo
+                    nav->proximo = apagar->proximo;
+                    delete apagar;
+                }
+            }
+
+/*
+
+            for (int i = 0; i < pos; i++) {
+                nav = apagar;
+                apagar = apagar->proximo;
+                if (nav == pos) {
+
+                }
+            }
+
+
+            nav->proximo = apagar->proximo;
+            delete apagar;
+*/
+        }
+    }
+
+template<typename T>
+void obter_item_da_lista_ES(TListaEncadeadaSimples<T>& ListaES, int pos){
+    if (pos < 0 || ListaES.inicio == nullptr) {
+        throw "Invalid index";
+    }
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    for (int i = 0; i < pos; i++) {
+        nav = nav->proximo;
+        if (nav == nullptr) {
+            throw "Invalid index";
+        }
+    }
+    return nav->dado;
+}
+
+template<typename T>
+int descobrir_indice_lista_ES(TListaEncadeadaSimples<T>& ListaES, T elementoES){ //funcao responsavel em retornar valor [i] caso os dados passados se encontram na lista, retorna [i] (posicao daquele dado na lista)
+    int i = 0;
+    for (TJogadorEncadeadoSimples<T>* nav = ListaES.inicio; nav != nullptr; nav = nav->proximo, i++) {
+        if (elementoES == nav->dado) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+template<typename T>
+bool contem_item_lista_ES(TListaEncadeadaSimples<T>& ListaES, T elementoES){
+    TJogadorEncadeadoSimples<T>* nav = ListaES.inicio;
+    if (nav == nullptr) {
+        return false;
+    }
+    else {
+        while (nav->proximo != nullptr) {
+            nav = nav->proximo;
+            if (elementoES == nav->dado) {
+                return true;
+            }
+        }
+        if (elementoES == nav->dado) {
+            return true;
+        }
+    }
+    return false; //retorna falso caso nao encontre o valor passado na lista
+}
+
+template<typename T>
+void debug_depurar_ES(TListaEncadeadaSimples<T>& ListaES){ // testar se a sequencia esta correta na lista
+ for(TJogadorEncadeadoSimples<T>* nav=ListaES.inicio; nav!=nullptr; nav=nav-> proximo){
+    cout << nav -> dado << " - " << nav << "-PROXIMO:" << nav->proximo;
+    }
+}
+
+int main() {
+
+// encadeada simples
+    TListaEncadeadaSimples<int> ListaES;
+
+    inicializar_lista_ES(ListaES);
+    inserir_inicio_na_lista_ES(ListaES, 1);
+    inserir_fim_na_lista_ES(ListaES, 3);
+    inserir_inicio_na_lista_ES(ListaES, 2);
+    inserir_posicao_na_lista_ES(ListaES,4,2);
+    //2 1 4 3
+    remover_posicao_na_lista_ES(ListaES,1);
+
+    imprimir_lista_ES(ListaES);
+
+    system("pause");
+    return 0;
+
+}
+message.txt
+8 KB
