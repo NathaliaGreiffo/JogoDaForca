@@ -1,0 +1,408 @@
+#include <iostream>
+#include <string>
+#include <time.h>
+#include <windows.h>
+#include <stdio.h>
+#include <unistd.h>
+
+using namespace std;
+
+struct Arma {
+    int dano_minimo;
+    int dano_maximo;
+};
+
+struct Jogador {
+    int nivel;
+    int vida;
+    int posicao_x;
+    int posicao_y;
+    Arma arma;
+    bool ganhou = false;
+};
+
+struct Inimigo {
+    string nome;
+    int vida;
+    Arma arma;
+};
+
+struct Bloco {
+    bool possuoPedra = false;
+    bool cadastrouInimigo = false;
+    bool existeInimigo = false;
+    bool batalhando = false;
+    bool inimigoMorreu = false;
+    Inimigo* Inimigo;
+};
+
+
+struct Mapa {
+    int A;
+    int L;
+    Bloco **MAT;
+};
+
+struct Fase {
+    string nome;
+    Inimigo Inimigo[5];
+    Mapa mapa_fase;
+};
+
+
+string nomeInimigo(int valor) {
+    string nome;
+    switch (valor) {
+    case 1:
+        nome = "Monstro Brita";
+        break;
+    case 2:
+        nome = "Monstro Vulcanico";
+        break;
+    case 3:
+        nome = "Monstro Pedregulho";
+        break;
+    case 4:
+        nome = "Monstro Meteoro";
+        break;
+    case 5:
+        nome = "Monstro Rochoso";
+        break;
+    };
+    return nome;
+}
+
+void mostraSaberMais() {
+    cout << "______________________________________________________________________" << endl;
+    cout << "|                                                                    |" << endl;
+    cout << "| Wow! Parece que voce quer saber mais sobre o nosso mapa. Vamos la! |" << endl;
+    cout << "|____________________________________________________________________|" << endl;
+    cout << "|                                                                    |" << endl;
+    cout << "| Continuando as ideias do trabalho passado, vamos fazer agora       |" << endl;
+    cout << "| um mapa para o nosso RPG, e pensar em outras funcoes, nele vamos   |" << endl;
+    cout << "| precisar de ponteiros e alocacao dinamica. Desvende conosco!       |" << endl;
+    cout << "|____________________________________________________________________|" << endl;
+    cout << "|                                                                    |" << endl;
+    cout << "|                  @byNathaliaGreiffo_TalitaFortuna                  |" << endl;
+    cout << "|____________________________________________________________________|" << endl;
+}
+
+void mostraOpcoesJogo() {
+    cout << "_________________________________________________________" << endl;
+    cout << "|                                                       |" << endl;
+    cout << "| Caro jogador, use as seguintes teclas para se mover:  |" << endl;
+    cout << "|_______________________________________________________|" << endl;
+    cout << "|                                                       |" << endl;
+    cout << "|                 W --> Se mover para cima              |" << endl;
+    cout << "|                 S --> Se mover para baixo             |" << endl;
+    cout << "|                 A --> Se mover para esquerda          |" << endl;
+    cout << "|                 D --> Se mover para direita           |" << endl;
+    cout << "|_______________________________________________________|" << endl;
+}
+
+Arma criaArma(int dano_minimo, int dano_maximo) {
+    Arma nova_arma;
+
+    nova_arma.dano_minimo = dano_minimo;
+    nova_arma.dano_maximo = dano_maximo;
+
+    return nova_arma;
+}
+
+Inimigo* criaNovoInimigo() {
+    Inimigo* novo_inimigo = new Inimigo;;
+
+    // Sorteamos um valor entre 0 e 4
+    int valor_nome_inimigo = rand() % 4;
+    // Esse valor sorteado + 1 será usado para definir um nome ao inimigo de forma aleatória
+    novo_inimigo->nome = nomeInimigo(valor_nome_inimigo + 1);
+    // Pode ter vida 14 -> 56
+    novo_inimigo->vida = 14 * (valor_nome_inimigo + 1);
+    // Cria a arma do inimigo
+    novo_inimigo->arma = criaArma(valor_nome_inimigo, valor_nome_inimigo + 11);
+
+    return novo_inimigo;
+
+}
+
+template<typename T>
+bool morreu(T personagem) {
+    if (personagem.vida < 0) {
+        cout << "Voce morreu" << endl;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+Mapa criaMapa(int altura, int largura) {
+
+    Mapa novoMapa;
+
+    Bloco** blocos = new Bloco*[altura];
+    for(int i = 0; i < altura; i++) {
+        blocos[i] = new Bloco[largura];
+    }
+
+    novoMapa.A = altura;
+    novoMapa.L = largura;
+    novoMapa.MAT = blocos;
+
+    return novoMapa;
+}
+
+void printarJogo(Fase fase_atual, Jogador jogador) {
+
+    for (int x = 0; x <  fase_atual.mapa_fase.A; x++) {
+        for (int y = 0; y <  fase_atual.mapa_fase.L; y++) {
+
+            if (x == jogador.posicao_x && y == jogador.posicao_y && fase_atual.mapa_fase.MAT[x][y].batalhando == false) {
+                cout << "[H]";
+            } else {
+                if (fase_atual.mapa_fase.MAT[x][y].existeInimigo && fase_atual.mapa_fase.MAT[x][y].batalhando == false) {
+                    cout << "[" << "X" << "]";
+                } else if ((fase_atual.mapa_fase.MAT[x][y].existeInimigo || fase_atual.mapa_fase.MAT[x][y].inimigoMorreu ) || fase_atual.mapa_fase.MAT[x][y].batalhando == true) {
+                    cout << "[" << "B" << "]";
+                } else if (fase_atual.mapa_fase.MAT[x][y].possuoPedra) {
+                    cout << "[" << "#" << "]";
+                } else {
+                    cout << "[ ]";
+                }
+            }
+
+        }
+        cout << endl;
+    }
+
+}
+
+void movimentar(Jogador* jogador, Fase fase_atual, char tecla) {
+
+    bool movimentou = false;
+
+    if (tecla == 'w' || tecla == 'W') {
+        // Se minha posição atual de X está acima do limite 00
+        if (jogador->posicao_x > 0 && fase_atual.mapa_fase.MAT[jogador->posicao_x-1][jogador->posicao_y].possuoPedra == false){
+            jogador->posicao_x = jogador->posicao_x - 1;
+            movimentou = true;
+        }
+    }
+    else if (tecla == 's' || tecla == 'S') {
+        // Se minha posicação atual de X nao chegou ainda no limite da altura
+        if (jogador->posicao_x < fase_atual.mapa_fase.A - 1 && fase_atual.mapa_fase.MAT[jogador->posicao_x+1][jogador->posicao_y].possuoPedra == false) {
+            jogador->posicao_x = jogador->posicao_x + 1;
+            movimentou = true;
+        }
+    }
+    else if (tecla == 'a' || tecla == 'A') {
+        if (jogador->posicao_y > 0 && jogador->posicao_y < fase_atual.mapa_fase.L && fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y-1].possuoPedra == false) {
+            jogador->posicao_y = jogador->posicao_y - 1;
+            movimentou = true;
+        }
+    }
+    else if (tecla == 'd' || tecla == 'D') {
+        if (jogador->posicao_y < fase_atual.mapa_fase.L -1 && fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y+1].possuoPedra == false) {
+            jogador->posicao_y = jogador->posicao_y + 1;
+            movimentou = true;
+        }
+    }
+
+    // Se executei qualquer uma das 4 ações e tiver inimigo vou iniciar uma batalha
+    if (movimentou && fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].existeInimigo == true) {
+        fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].batalhando = true;
+
+        cout << ">>>>>>>>>> BATALHA <<<<<<<<<<" << endl;
+        cout << "Vida do " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << ": " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida << endl;
+        cout << "Sua vida: " << jogador->vida << endl;
+        
+        do {
+
+            srand(time(NULL));
+            int danoJogador = rand()%45;
+            sleep(1);
+
+            srand(time(NULL));
+            int danoInimigo = rand()%25;
+            sleep(1);
+
+
+            // Trecho de cálculo de batalha do jogador
+            if (danoJogador < jogador->arma.dano_minimo || danoJogador > jogador->arma.dano_maximo) {
+                cout << "Voce errou o ataque | 0 de dano em " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << endl;
+            } else {
+                
+                fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida = fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida - danoJogador;
+                cout << "Voce acertou o ataque | " << danoJogador << " de dano em " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << endl;
+            }
+
+
+            // Trecho de cálculo de batalha do inimigo
+            if (
+                danoInimigo < fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->arma.dano_minimo ||
+                danoInimigo > fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->arma.dano_maximo ) {
+                cout << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << " errou o ataque | 0 de dano em voce!" << endl;
+            } else {
+                jogador->vida = jogador->vida - danoInimigo;
+                cout << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << " acertou o ataque | " << danoInimigo << " de dano em voce!" << endl;                
+            }
+
+            cout << "Vida do " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->nome << ": " << fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida << endl;
+            cout << "Sua vida: " << jogador->vida << endl;
+
+            if (fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida <= 0) {
+                fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].existeInimigo = false;
+                fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].inimigoMorreu = true;
+                fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].batalhando = false;
+            }
+
+        } while (jogador->vida > 0 && fase_atual.mapa_fase.MAT[jogador->posicao_x][jogador->posicao_y].Inimigo->vida > 0);
+
+
+         system("pause"); 
+
+    }
+
+}
+
+Fase criaFase(int numInimigos, int numPedras, Inimigo* inimigos, int alturaMapa, int larguraMapa) {
+
+    Fase nova_fase;
+
+
+    nova_fase.mapa_fase = criaMapa(alturaMapa, larguraMapa);
+
+    // // Se preciso ter 5 inimigos, vou preencher 5 inimigos de forma aleatória
+    int inimigosParaConfigurar = numInimigos;
+    while (inimigosParaConfigurar > 0) {
+        int pos_x_aleatoria = rand() % 6 + 1;
+        int pos_y_aleatoria = rand() % 7 + 1;
+
+        if (nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].cadastrouInimigo == false) {
+
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].Inimigo = criaNovoInimigo();
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].possuoPedra = false;
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].cadastrouInimigo = true;
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].existeInimigo = true;
+
+            inimigosParaConfigurar--;
+        }
+
+    }
+
+    // //Se preciso ter 11 pedras, vou preencher 11 pedras de forma aleatória
+    int pedrasParaConfigurar = numPedras;
+    while(pedrasParaConfigurar > 0) {
+        int pos_x_aleatoria = rand() % 6 + 1;
+        int pos_y_aleatoria = rand() % 7 + 1;
+
+        if (
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].cadastrouInimigo == false &&
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].possuoPedra == false
+        ) {
+
+            nova_fase.mapa_fase.MAT[pos_x_aleatoria][pos_y_aleatoria].possuoPedra = true;
+
+            pedrasParaConfigurar--;
+        }
+
+    };
+
+    return nova_fase;
+
+}
+
+Jogador criaJogador(int nivel, int vida, int posx, int posy, Arma arma){
+    Jogador novo_jogador;
+
+    novo_jogador.nivel = nivel;
+    novo_jogador.vida = vida;
+    novo_jogador.posicao_x = posx;
+    novo_jogador.posicao_y = posy;
+    novo_jogador.arma = arma;
+
+    return novo_jogador;
+}
+
+int escolhaOpcoesUsuario() {
+    int escolha = 0;
+    cout << "________________________________" << endl;
+    cout << "|                              |" << endl;
+    cout << "|     Labirinto dos Rangers    |" << endl;
+    cout << "|______________________________|" << endl;
+    cout << "|                              |" << endl;
+    cout << "|-> Digite '1' para Jogar      |" << endl;
+    cout << "|-> Digite '2' para Saber Mais |" << endl;
+    cout << "|-> Digite '3' para Sair       |" << endl;
+    cout << "|______________________________|" << endl;
+    cin >> escolha;
+    return escolha;
+}
+
+void verificaSeGanhou(Fase* fase, Jogador* jogador, int numero_inimigos) {
+    int contador = 0;
+    for (int x = 0; x <  fase->mapa_fase.A; x++) {
+        for (int y = 0; y <  fase->mapa_fase.L; y++) {
+            if (fase->mapa_fase.MAT[x][y].batalhando == false &&  fase->mapa_fase.MAT[x][y].inimigoMorreu == true) {
+                contador++;
+            }
+        }
+    }
+
+    if (contador == numero_inimigos) {
+        cout << "Todos os " << numero_inimigos << " inimigos foram mortos, voce ganhou!" << endl;
+        jogador->ganhou = true;
+    }
+}
+
+void iniciaJogo(Arma arma_jogador, Jogador jogador, Fase fase_atual, int numero_inimigos) {
+    char tecla;
+    do {
+        verificaSeGanhou(&fase_atual, &jogador, numero_inimigos);
+        printarJogo(fase_atual, jogador);
+        mostraOpcoesJogo();
+        cin >> tecla;
+        system("cls");
+        movimentar(&jogador, fase_atual, tecla);              
+    } while (!morreu(jogador) && jogador.ganhou == false);
+}
+
+void sair(){
+        cout << "________________________________________________" << endl;
+        cout << "|                                              |" << endl;
+        cout << "| Opa! Infelizmente voce saiu, ate outra hora! |" << endl;
+        cout << "|______________________________________________|" << endl;
+}
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+    srand(time(NULL));
+
+    int escolha_menu, numero_inimigos = 5, numero_pedras = 11;
+    char tecla;
+
+    Arma arma_jogador = criaArma(5, 25);
+    Jogador jogador = criaJogador(1, 100, 0, 0, arma_jogador);
+    Fase fase_atual = criaFase(numero_inimigos, numero_pedras, new Inimigo[5], 7, 8);
+
+    escolha_menu = escolhaOpcoesUsuario();
+
+    switch (escolha_menu) {
+
+        case 1:
+            iniciaJogo(arma_jogador, jogador, fase_atual, numero_inimigos);
+            break;
+        case 2:
+            mostraSaberMais();
+            break;
+        case 3:
+            sair();
+            break;
+        default:
+            break;
+    }
+
+    return 0;
+
+
+}
