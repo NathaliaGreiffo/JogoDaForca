@@ -1,0 +1,163 @@
+#include <iostream>
+#include <time.h>
+#include <windows.h>
+#include <locale.h>
+
+using namespace std;
+
+void imprimeVetor(int vet[], int nRoladas) {
+    for(int posicao = 0; posicao < nRoladas; posicao++){
+        cout << "[" << vet[posicao] + 1<< "]" ;
+    }
+}
+
+void porcentagem(int vet[], int nLados, int nRoladas){
+    float resultado;
+
+    for(int posicao = 0; posicao < nLados; posicao++){
+        int contar = 0;
+        for(int posicaoAux = 0; posicaoAux < nRoladas; posicaoAux++){
+            int numAux = vet[posicaoAux];
+            if(posicao + 1 == numAux){
+                contar++;
+            }
+        }
+        float vetor = vet[posicao];
+        resultado = (vetor / nRoladas) * 100;
+        cout << endl << resultado << "%" << endl;
+    }
+}
+
+void contador(int vet[], int nLados, int nRoladas)
+{
+    int vetSoma[nLados];
+    for(int posicao = 0; posicao < nLados; posicao++){
+        int contar = 0;
+        for(int posicaoAux = 0; posicaoAux < nRoladas; posicaoAux++){
+
+            int numAux = vet[posicaoAux];
+
+            if(posicao + 1 == numAux){
+                contar++;
+            }
+        }
+        vetSoma[posicao] = contar;
+    }        
+    cout << "\n###### VETOR DAS SOMAS #######" << endl;
+    imprimeVetor(vetSoma, nLados);
+    porcentagem(vetSoma, nLados, nRoladas);
+}
+
+
+void jogadas(int nLados, int nRoladas, int nDados){
+	int aleatorio, nJogada = 1, dado = 1;
+	srand(time(NULL));
+	int vet[nRoladas] = {0};
+
+	if(nDados == 1){
+	    cout << "|-------------------------------------|" << endl;
+	    cout << "|             Resultados:             |" << endl;
+	    cout << "|-------------------------------------|" << endl;
+	        
+	    for(int i = 0; i < nRoladas; i++){
+	        aleatorio = rand() % nLados;
+	        cout << "|             Jogada " << nJogada++ << ": " << aleatorio + 1 << "             |" << endl;
+	        vet[i] = aleatorio;
+	    }
+	    cout << "|-------------------------------------|" << endl;
+	
+	    contador(vet, nLados, nRoladas);
+	} else {
+		for(i = 0; i < nDados; i++){
+			cout << "Dado " << dado++ << endl;
+			
+		}
+	}
+    
+}
+
+
+int main()
+{
+    setlocale(LC_ALL, "Portuguese");
+    int escolhaMenu, retornarMenu, nLados, nRoladas, nDados;
+    do {
+        cout << "|------------------------------------|" << endl;
+        cout << "|             Trabalho 1             |" << endl;
+        cout << "|------------------------------------|" << endl;
+        cout << "|1)  Rolar um dado                   |" << endl;
+        cout << "|2)  Rolar mais de um dado           |" << endl;
+        cout << "|3)  Desenvolvedores                 |" << endl;
+        cout << "|4)  Sair                            |" << endl;
+        cout << "|------------------------------------|" << endl;
+        cout << "|     Digite abaixo a sua escolha:   |" << endl;
+        cout << "|------------------------------------|" << endl;
+        cin >> escolhaMenu;
+        system("cls");
+
+        switch(escolhaMenu){
+            case 1:
+		            nDados = 1;
+                    cout << "|------------------------------------------------|" << endl;
+                    cout << "|Responda abaixo as perguntas para iniciar o jogo|" << endl;
+                    cout << "|1) Quantos LADOS o dado irá ter?                |" << endl;
+                    cout << "|2) Quantas VEZES o dado terá que rolar?         |" << endl;
+                    cout << "|------------------------------------------------|" << endl;
+                    cout << "1) Lados: ";
+                    cin >> nLados;
+                    cout << "2) N˙mero de roladas: ";
+                    cin >> nRoladas;
+                    jogadas(nLados, nRoladas, nDados);
+                    break;
+
+            case 2:
+		                cout << "|------------------------------------------------|" << endl;
+                    cout << "|Responda abaixo as perguntas para iniciar o jogo|" << endl;
+                    cout << "|1) Quantos LADOS o dado irá ter?                |" << endl;
+                    cout << "|2) Quantas VEZES o dado terá que rolar?         |" << endl;
+                    cout << "|3) Quantos dados serão usados?                  |" << endl;
+                    cout << "|------------------------------------------------|" << endl;
+                    cout << "1) Lados: ";
+                    cin >> nLados;
+                    cout << "2) Número de roladas: ";
+                    cin >> nRoladas;
+                    cout << "3) Número de dados: ";
+                    cin >> nDados;
+                    jogadas(nLados, nRoladas, nDados);
+                    break;
+
+            case 3:
+                do {
+                    system("cls");
+                    cout << "|----------------------------------------------------------|" << endl;
+                    cout << "|Aluno 1: Bernardo Magueta Kowalsky - Ciência da Computação|" << endl;
+                    cout << "|Aluno 2: Nathália Adriano Greiffo  - Ciência da Computação|" << endl;
+                    cout << "|Professor: Rodrigo Lyra                                   |" << endl;
+                    cout << "|Disciplina: Algoritmos e Programação II                   |" << endl;
+                    cout << "|----------------------------------------------------------|" << endl;
+                    cout << "|          Digite '1' abaixo para retornar ao menu         |" << endl;
+                    cout << "|----------------------------------------------------------|" << endl;
+                    cin >> retornarMenu;
+                }while(retornarMenu != 1);
+                system("cls");
+                break;
+
+            case 4:
+                break;
+
+            default:
+                do {
+                    system("cls");
+                    cout << "|----------------------------------------|" << endl;
+                    cout << "|       Desculpa, ocorreu um erro!       |" << endl;
+                    cout << "|----------------------------------------|" << endl;
+                    cout << "| Digite '1' abaixo para retornar ao menu|" << endl;
+                    cout << "|----------------------------------------|" << endl;
+                    cin >> retornarMenu;
+                }while(retornarMenu != 1);
+                system("cls");
+                break;
+        }
+    }while(escolhaMenu != 4);
+    return 0;
+}
