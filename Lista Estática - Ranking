@@ -1,0 +1,159 @@
+#include <iostream>
+
+using namespace std;
+
+struct TJogador {   //struct q armazena pontuacao e game dos jogadores
+    int game;   //int game do jogador
+    int pontuacao;  //int pontuacao do jogador
+};
+
+const int CAPACIDADE = 30;  //capacidade max de jogadores
+
+struct TListaJogadores{ //struct q armazena lista de jogadores
+    TJogador vetor[CAPACIDADE]; //vetor do tipo TJogador, vetor q armazena jogadores
+    int quantidade; //quantidade de jogadores da lista
+};
+
+void inicializar_lista(TListaJogadores &lista) {  //inicializa lista jogador
+    lista.quantidade = 0;   //zera lista
+}
+
+void inserir_na_lista(TListaJogadores &lista, TJogador jogador,int pos){
+    if( lista.quantidade >= CAPACIDADE ) {  //se quantidade for maior q a capacidade "Lista Cheia" e retorna
+        cout << "Lista cheia!" << endl;
+        return;
+    }
+    if (pos > lista.quantidade){    //se a posicao passada for maior q a quantidade da lista
+        cout << "\nPosicao invalida, pois nao ha valores validos na posicao anterior!" << endl; //imprime posicao invalida
+        return; //retorna
+    }
+
+    // Deslocar elementos
+    for(int i = lista.quantidade; i > pos; i--) { //for para percorrer da quantidade (ultimo elemento adicionado) ate o inicio (0)
+        lista.vetor[i] = lista.vetor[i-1];  //desloca o elemento que estava na posicao(i) para a seguinte
+    }
+
+    lista.vetor[pos] = jogador;   //atribui na primeira posicao o valor gerado aleatorio no preencher_lista
+    lista.quantidade++; //incrementa quantidade pois aumentou o tamanho da lista
+}
+
+void preencher_lista(TListaJogadores & lista) {   //preenche lista com valores aleatorios
+    srand(time(NULL));  //srand para rand gerar valores aleatorios
+    for(int game = 0; game < 3; game++) {   //for para numeros de games
+        for(int pontuacao = 0; pontuacao < 10; pontuacao++) {   //for para numeros de jogaores por game
+            TJogador jogador;   //cria instancia para jogador
+            jogador.game = game;    //atribui valor game do jogador
+            jogador.pontuacao = rand() % 100;   //atribui valor aleatorio para pontucao do jogador
+            inserir_na_lista(lista,jogador,0);  //insere valor gerado para inicio da lista do jogador
+        }
+    }
+}
+
+void imprimir_lista(TListaJogadores lista) {      //imprime lista
+    if(lista.quantidade == 0) { //se quantidade for 0, imprime "Lista vazia"
+        cout << "Lista vazia" << endl;  //imprime "Lista vazia"
+    } else {    //se a quantidade não for 0
+        for(int i = 0; i < lista.quantidade; i++) { //for que percorre de 0 à quantidade da lista passada
+            cout << "POSICAO[" << i << "]: " << "TJogador {game: " << lista.vetor[i].game << ", pontuacao: "<< lista.vetor[i].pontuacao << "}" << endl; //imprime "Lista[i]: TJogador { game, pontuacao}"
+        }
+    }
+    cout << endl;
+}
+
+void remover_lista(TListaJogadores &lista, int pos) {   //remove item do inicio da lista passada
+
+    if(lista.quantidade == 0 || pos > lista.quantidade-1) { //se quantidade da lista = 0
+        cout << "Lista vazia ou posicao invalida"; //imprime lista vazia
+        return;
+    }
+
+    // Deslocar elementos
+    for(int i = pos; i < lista.quantidade; i++) { //for para percorrer da quantidade (ultimo elemento adicionado) ate o inicio (0)
+        lista.vetor[i] = lista.vetor[i+1];  //desloca o elemento que estava na posicao(i) para a seguinte
+    }
+
+    lista.quantidade--; //incrementa quantidade pois aumentou o tamanho da lista
+}
+
+TJogador obter_item_lista(TJogador jogadorTemp, TListaJogadores lista, int pos) {    //funcao que obtem posicao
+
+    if(pos < 0 || pos >= CAPACIDADE) {  //se posicao for menor q 0 ou posicao for maior ou igual a capacidade max
+        jogadorTemp.game = -1; //game invalido
+        jogadorTemp.pontuacao = -1;    //pontuacao invalida
+        return jogadorTemp;    //retorna invalida
+    }
+
+    return lista.vetor[pos];    //retorna posicao referente ao jogador
+
+}
+
+void Sort(TListaJogadores &lista) { //funcao para sort top 10
+    bool ordenado = false;
+    int j = 0;  //define j = 0, para aux no for
+    TListaJogadores tempLista;
+    while (!ordenado) { //repete oenquanto ordenado for falso
+        ordenado = true;    //define ordenado como true
+        j++;
+        for (int i = 0; i < lista.quantidade - j; i++) {   //for que percorre de 0 á (quantidade da lista - j), j tem como funcao diminuir a quantidade da lista para fazer a ordenacao
+            if (lista.vetor[i].pontuacao < lista.vetor[i + 1].pontuacao) {    //se a pontuacao do jogador da lista for menor q a pontuacao do jogador da lista seguinte
+                tempLista.vetor[i] = lista.vetor[i];   //pontuacao temp recebe pontuacao do jogador da lista seguinte
+                lista.vetor[i] = lista.vetor[i + 1];  //jogador da posicao [i] = jogador da posicao seguinte
+                lista.vetor[i + 1] = tempLista.vetor[i];   //pontuacao do jogador seguinte recebe pntuacao temp
+                ordenado = false;   //define ordenado como falso
+            }
+        }
+    }
+    if (lista.quantidade < 10){    //se quantidade da lista for menor q 10
+        cout << "Nao ha valores suficientes para TOP 10!" << endl;  //imprime "Nao ha valores suficientes para TOP 10!"
+        lista.quantidade = 0;  //define quantidade da lista top 10 (rank10) para 0
+    }else{  //se a quantidade da lista nao for menor q 10
+        lista.quantidade = 10; //define quantidade da lista top 10 (rank10) para 10
+    }
+}
+
+bool contem_item_lista(TJogador jogadorTemp, TListaJogadores lista){    //funcao responsavel em retornar valor true caso os dados passados se encontram na lista
+    for(int i = 0; i < lista.quantidade; i++){
+        if(jogadorTemp.pontuacao == lista.vetor[i].pontuacao && jogadorTemp.game == lista.vetor[i].game){   //se pontuacao e game do jogadortemp (dados passados no funcao) forem iguais a algum valor presente na lista, retorna true
+            return true;
+        }
+    }
+    return false;   //retorna falso caso nao encontre o valor passado na lista
+}
+
+int descobrir_indice(TJogador jogadorTemp, TListaJogadores lista){  //funcao responsavel em retornar valor [i] caso os dados passados se encontram na lista, retorna [i] (posicao daquele dado na lista)
+    for(int i = 0; i < lista.quantidade; i++){
+        if(jogadorTemp.pontuacao == lista.vetor[i].pontuacao && jogadorTemp.game == lista.vetor[i].game){   //se pontuacao e game do jogadortemp (dados passados no funcao) forem iguais a algum valor presente na lista, retorna [i]
+            return i;   //retorna [i], posicao do vetor da lista que possui dado igual ao passdo na funcao (jogadorTemp)
+        }
+    }
+
+    return -1;  //retorna -1 caso nao haja dado semelhante a passado na funcao
+}
+
+void gerar_rank10(TListaJogadores &lista, TListaJogadores &rank10, TJogador &jogador){
+    for(int i = 0; i < lista.quantidade; i++){
+        rank10.vetor[i] = obter_item_lista(jogador, lista, i);
+    }
+    rank10.quantidade = lista.quantidade;
+    Sort(rank10);
+}
+
+int main() {
+
+    TListaJogadores lista;                  //nova instancia de lista -> lista (tipo TListaJogadores)
+    TJogador jogador;
+    TListaJogadores rank10;                 //nova instancia de lista -> rank10 (tipo TListaJogadores)
+    inicializar_lista(lista);               //inicializa lista lista, zera a quantidade
+    inicializar_lista(rank10);              //inicaaliza lista rank10, zera a quantidade
+    preencher_lista(lista);                 //preenche lista com valores aletatorios
+    cout << "LISTA GERAL" << endl;          //imprime lista geral
+    imprimir_lista(lista);                  //imprime lista na tela
+    gerar_rank10(lista, rank10, jogador);
+    cout << "LISTA TOP 10" << endl;         //imprime lista geral
+    imprimir_lista(rank10);                 //imprime rank10
+
+    //contem_item                           //recebe o dado e verifica se ele está na lista. Se estiver, retorna verdadeiro, falso caso contrário;
+    //descobrir_item                        //recebe o dado e busca-o na lista. Se estiver na lista, retorna à posição do dado na lista, caso contrário, retorna -1.
+
+    return 0;
+}
