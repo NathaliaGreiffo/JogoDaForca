@@ -1,0 +1,149 @@
+#include <iostream>
+#include <unistd.h>
+#include <time.h>
+
+using namespace std;
+
+string nomeInimigo(int valor)
+{
+    string nome;
+    switch(valor){ // ordem e nome dos inimigos
+        case 1:
+            nome = "Valdemort";
+            break;
+        case 2:
+            nome = "Dementador";
+            break;
+        case 3:
+            nome = "Draco";
+            break;
+        case 4:
+            nome = "Jinx";
+            break;
+        case 5:
+            nome = "Coringa";
+            break;
+    };
+    return nome;
+}
+struct INIMIGO{
+    string nome;
+    int vida;
+};
+
+struct JOGADOR{
+    int nivel;
+    string nome;
+    int vida = 75;
+};
+
+struct ARMA{
+    int danoMinimo;
+    int danoMaximo;
+};
+
+template <typename morreu> 
+morreu personagem_morreu (morreu jogadorVida, morreu inimigoVida) // verificar se o inimigo e o jogador morreram
+{
+    if(inimigoVida < 1) { // quando a vida do inimigo for menor que 1, vai pro proximo inimigo
+        return 0;
+    } 
+    else if(jogadorVida < 1) { // acaba o jogo
+        return 1;
+    }
+    return 2;
+}
+
+
+int main() {
+    setlocale (LC_ALL,"Portuguese");
+    int Menu;
+    INIMIGO inimigo; // estamos instanciando as structs
+    JOGADOR jogador;
+    ARMA armaInimigo;
+    ARMA armaJogador;
+    jogador.nivel = 0; // declarando que o nivel inicia-se em zero
+    armaJogador.danoMinimo = 0;
+    armaJogador.danoMaximo = 45;
+    armaInimigo.danoMinimo = 0;
+    armaInimigo.danoMaximo = 25;
+
+    cout << endl << "Guerra de Vilões" << endl << endl; // inicio do jogo
+    cout << "Digite 1 para Jogar" << endl;
+    cout << "Digite 2 para Sobre" << endl;
+    cout << "Digite 3 para Sair" << endl;
+    cin >> Menu;
+
+    switch(Menu) {
+        case 1:
+            cout << "Digite o nome do personagem" << endl;
+            cin >> jogador.nome; 
+            system("cls");
+                for(int i = 1; i < 6; i++){ 
+                    string nome;
+                    nome = nomeInimigo(i);
+                    inimigo.nome = nome;
+                    jogador.vida;
+                    inimigo.vida = 50;
+                    jogador.nivel ++;
+                    do {
+                    cout << "nivel" << ": " << jogador.nivel << endl << endl;
+                        sleep(1);
+                        srand(time(NULL));
+                        int danoJogador = rand()%45;
+                        sleep(1);
+                        srand(time(NULL));
+                        int danoInimigo = rand()%25;
+                        if (jogador.vida > 0){
+                            if (danoJogador < armaJogador.danoMinimo || danoJogador > armaJogador.danoMaximo){
+                                cout << jogador.nome <<" errou o ataque | 0 de dano em " << inimigo.nome << endl;
+                                system ("pause");
+                            }
+                            else{
+                                inimigo.vida = inimigo.vida - danoJogador;
+                                cout << jogador.nome <<" acertou o ataque | "<< danoJogador <<" de dano em " << inimigo.nome << endl;
+                                system ("pause");
+                            }
+                        }
+                        if(inimigo.vida > 0){
+                            if (danoInimigo < armaInimigo.danoMinimo || danoInimigo > armaInimigo.danoMaximo){
+                                cout << inimigo.nome << " errou o ataque | 0 de dano em " << jogador.nome << endl;
+                                system ("pause");
+                            }
+                            else{
+                                jogador.vida = jogador.vida - danoInimigo;
+                                cout << inimigo.nome << " acertou o ataque | "<< danoInimigo <<" de dano em " << jogador.nome << endl;
+                                system ("pause");
+                            }
+                        }    
+                        cout << "Vida " << inimigo.nome << ": " << inimigo.vida << endl;
+                        cout << "Vida " << jogador.nome << ": " << jogador.vida << endl;
+                        
+                        if(personagem_morreu<int>(jogador.vida, inimigo.vida) == 0){
+                            cout << inimigo.nome << " morreu" << endl;
+                            system ("pause");
+                            system("cls");
+                        } 
+                        else if(personagem_morreu<int>(jogador.vida, inimigo.vida) == 1){
+                            cout << "O jogador morreu, tente novamente" << endl;
+                        }
+
+                    } while(jogador.vida > 0 && inimigo.vida > 0);
+                    if(jogador.vida < 1) {
+                        break;
+                    };
+                }
+            break;
+
+        case 2:
+            cout << "Bem vindo ao jogo Guerra de Vilões eleborado pelas alunas Nathalia e Talita." << endl;
+            cout << "Disciplina Algoritmos e programação II, professor Rodrigo Lyra."; 
+            break;
+
+        case 3:
+            cout << "Ops, você saiu :( ";
+            break;
+    }
+
+    return 0;
+}
