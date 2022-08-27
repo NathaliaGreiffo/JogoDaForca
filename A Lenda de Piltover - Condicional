@@ -1,0 +1,177 @@
+#include <iostream>
+using namespace std;
+int main() {
+    setlocale(LC_ALL,"Portuguese");
+    float escolha,conquista;
+    cout << " A lenda de Piltover."; //"cout" para "apresentar" a frase do título.
+    string nome; //"string" define uma variavel para nome.
+    cout << "\n Digite o nome do seu personagem: ";
+    getline(cin,nome); fflush(stdin); //"getline(cin,nome); fflush(stdin)" para entrada de dados na variavel "nome" podendo utilizar nome completo.
+    cout << "\n Em um dia no reino de Piltover, " <<nome<<" estava a procura de frutas Araçá na Floresta das Capivaras, sua avó havia lhe dito que precisava das frutas até o pôr do sol para poder fazer um chá que ajudaria a salvar a vida de seu cachorro Rox, pois seu cachorro havia entrado na mesma floresta e sido picado por uma cobra-cabeçuda, uma única cobra extremamente venenosa que vivia na floresta durante milhares de anos, causando medo a moradores de Piltover. Sua avó havia lhe dado uma bolsa de ferramentas contendo uma corda, um pano e algumas bananas para sua alimentação." <<endl;
+    cout << "\n Digite 1: Se deseja iniciar a aventura.";
+    cout << "\n Digite 0: Se não deseja iniciar a aventura. "<<endl;
+    cin>>escolha; //cin para entrada de dados na variavel float (escolha).
+    if(escolha==1) { //if para se a escolha for igual a 1 ela procede a linha 25.
+        cout << "\n Ótima escolha "<<nome<<", vamos lá!." <<endl;
+    } else if(escolha==0) { //"else if" se a escolha for igual a 0, o jogo informa (cout) que você perdeu.
+        cout << "\n Uma pena "<<nome<<", volte outra hora." <<endl;
+        cout << "\n Você Perdeu!";
+        return 0; //"return 0", para finalizar o codigo
+    } else { //"else", tudo que não for 1 ou 0, será informado que a opção não existe.
+        cout << "\n Opção não existente, utilize somente opções válidas!" <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Após alguns minutos andando na Floresta, " <<nome<< " se deparou com um rio muito fedorento, havia muitos peixes mortos na margem e urubus se alimentando daquilo." <<endl;
+    cout << "\n Digite 1: Se afastar do rio e traçar outro caminho longe da margem.";
+    cout << "\n Digite 0: Jogar bananas nos urubus." <<endl;
+
+    cin>>escolha;
+        if(escolha==1) {
+        cout << "\n Após se afastar da margem " <<nome<<" encontra um caminho de cascalho e nele há placas de madeira indicando uma rota desconhecida, ouve um barulho vindo dos arbustos, deseja se aproximar para ver?" <<endl;
+    } else if(escolha==0) {
+        cout << "\n Urubus odeiam bananas, e não gostam de serem incomodados, eles atacam " <<nome<<" com várias picadas até a morte." <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existente, utilize somente opções válidas!" <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Se aproximar.";
+    cout << "\n Digite 0: Ignorar e continuar o caminho." <<endl;
+    cin>>escolha;
+    if(escolha==1) {
+conquista = conquista + 1; //"conquista" é a variavel float para definir a conquista no final.
+        } else if(escolha !=0)    {
+        cout << "\n Opção não existente, utilize somente opções válidas!" <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+  }
+    cout << "\n No fim do caminho "<<nome<<" encontra um buraco enorme, olha para dentro do buraco e observa uma escada bastante danificada enorme ao lado." <<endl;
+    cout << "\n Digite 1: Amarrar a corda em uma árvore e descer com ela.";
+    cout << "\n Digite 0: Arriscar descer a escada." <<endl;
+    cin>>escolha;
+    if(escolha==1) {
+        cout << "\n Ao chegar no fundo do buraco, "<<nome<<" observa uma espada presa a uma pedra, porém havia muitos escorpiões perto da espada." <<endl;
+	    } else if(escolha==0)    {
+        cout << "\n "<<nome<<" tenta descer pela escada, porém se rompe e ele cai com tudo no chão." <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existente, utilize somente opções válidas!";
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Jogar bananas nos escorpiões.";
+    cout << "\n Digite 0: Enfrentar os escorpiões e tentar retirar a espada." <<endl;
+    cin>>escolha;
+    if(escolha==1) {
+        cout << "\n Os escorpiões têm muito medo de bananas, eles se afastam e "<<nome<<" chega perto da espada." <<endl;
+    } else if(escolha==0) {
+        cout << "\n " <<nome<<" tenta enfrentar os escorpiões para retirar a espada, porém ele leva uma picada mortal."<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Tentar retirar a espada.";
+    cout << "\n Digite 0: Tenta empurrar a espada."<<endl;
+    cin>>escolha;
+    if(escolha==0) {
+        cout << "\n " <<nome<<" empurra a espada que abre uma passagem para a superfície, nesta passagem há uma pintura muito antiga na parede que tinha escrito uma mensagem dizendo: 'Se a dúvida aparecer nunca deixe as bananas apodrecer', deseja guardá-la?." <<endl;
+    } else if(escolha==1) {
+        cout << "\n " <<nome<<" retira a espada, porém aciona uma armadilha e uma pedra cai em cima de "<<nome<<". " <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!" <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Sim, será um bom presente para vovó.";
+    cout << "\n Digite 0: Não, será difícil carregá-la."<<endl;
+    cin>>escolha;
+    if(escolha==1) {
+conquista = conquista + 1;
+    } else if(escolha!=0)    {
+        cout << "\n Opção não existe, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n "<<nome<<" continua sua caminhada. Após algum tempo andando sem encontrar nenhuma árvore de araçá, senta-se em uma pedra, sente sua barriga roncando de fome, abre sua bolsa e observa que não possui mais nenhuma banana para comer." <<endl;
+    cout << "\n Digite 1: Retornar à caverna para pegar as bananas no chão.";
+    cout << "\n Digite 0: Continuar a busca pelas araçás." <<endl;
+    cin>>escolha;
+    if(escolha==0) {
+        cout << "\n "<<nome<<" encontra uma bananeira com um cacho de bananas maduras, ao lado de uma casa abandonada, chega perto da casa e fica de cara com a terrível cobra-cabeçuda." <<endl;
+    } else if(escolha==1) {
+        cout << "\n <<nome<< segue a profecia escrita na parede, retorna a caverna, porém as bananas que estavam ali tinham sido comidas pela terrível cobra-cabeçuda, que ficou enorme após comer as bananas, e com uma simples bocada, ela devora "<<nome<<"." <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!" <<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Tentar pegar as bananas e sair correndo.";
+    cout << "\n Digite 0: Tentar pegar as bananas e jogar na cobra-cabeçuda."<<endl;
+    cin>>escolha;
+    if(escolha==1) {
+        cout << "\n "<<nome<<" pega as bananas, sai correndo e leva uma mordida da cobra, porém consegue escapar da cobra-cabeçuda, após se afastar do local, descasca as bananas e come e sacia sua fome. Após o susto com a cobra, "<<nome<<" observa que a mordida da cobra precisava ser tratada urgentemente, necessitava encontrar aquele fruto, então prosseguiu. No caminho, uma ventania devastadora começa a fazer tudo ao seu redor voar. "<<nome<<" se depara com tronco de árvore gigantesco caído no chão, com suas folhas extremamentes brilhantes e douradas." <<endl;
+    } else if(escolha==0) {
+        cout << "\n “<<nome<< “ pega as bananas e joga na cobra, porém a cobra come as bananas e fica maior e com apenas uma bocada engole "<<nome<<"."<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: O aroma das folhas é extraordinário, porém "<<nome<<" não encosta na folha pois desconfia de sua natureza.";
+    cout << "\n Digite 0: "<<nome<<" percebe que são folhas valiosas e decide levá-las para uma futura coleção."<<endl;
+    cin>>escolha;
+    if(escolha==0) {
+conquista = conquista + 1;
+        } else if(escolha !=1)    {
+        cout << "\n Opção não existente, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+  }
+    cout << "\n Após várias horas "<<nome<<" encontra um senhor vagando pela floresta, chega perto e pergunta quem era ele, o ancião disse que seu nome era Rafaelsen, o Mago, conhecia todos os segredos da floresta e era responsável por ela. "<<nome<<" vibrou muito, perguntou ao mago onde poderia encontrar a tão sonhada árvore de araçá, ele disse que há uma ponte que leva ao outro lado do rio, e lá encontrará a árvore, "<<nome<<" mostra a picada da cobra e Rafaelsen, ele saiu correndo dizendo “Não acredito, ela retornou, preciso avisar ao Rei”. Após a ajuda do mago, "<<nome<<" segue a rota em direção a ponte, encontra novamente a caverna, observa que a espada estava brilhando, entra na caverna, e com as bananas em sua mão afasta os escorpiões de perto da espada."<<endl;
+    cout << "\n Digite 1: Tentar retirar a espada.";
+    cout << "\n Digite 0: Tentar empurrar e puxar a espada."<<endl;
+    cin>>escolha;
+    if(escolha==0) {
+        cout << "\n "<<nome<<" empurra e puxa a espada e ela sai, porém a caverna começa a desabar, "<<nome<<" sai correndo do local e consegue escapar. Chegando na superfície são e salvo, senta-se numa pedra e observa que a picada está cada vez pior, logo pensa em seu cachorro, ‘será que ainda está vivo?’, "<<nome<<" retira o pano da mochila, e o amarra por cima da picada com força e continua sua caminhada até a árvore. Chegando na ponte, enxerga lá no outro lado a árvore que tanto busca, ao se aproximar percebe que a terrível cobra-cabeçuda está enorme e furiosa em frente a árvore." <<endl;
+    } else if(escolha==1) {
+        cout << "\n "<<nome<<" retira a espada, porém aciona uma armadilha e uma pedra cai em cima de "<<nome<<"."<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Digite 1: Pegar a espada e ataca-la.";
+    cout << "\n Digite 0: Correr."<<endl;
+    cin>>escolha;
+    if(escolha==1) {
+        cout << "\n "<<nome<<" ataca a cobra-cabeçuda e ela sente o golpe, a cobra tenta revidar, mas "<<nome<<" enfia sua espada na cobra, a cobra começa a sangrar sem parar e tenta novamente atacá-lo, porém "<<nome<<" pega novamente sua espada e corta a cabeça da cobra. Logo em seguida chega o rei de Piltover, Rei Volneisen, junto com seu mago Rafaelsen, o rei observa a cena em sua frente e agradece a "<<nome<<", disse que poderia ficar com a espada e oferece um cargo de alto nível em seu palácio. "<<nome<<" agradece ao rei, porém já estavas fraco precisava da fruta, então o mago observou a mordida em seu corpo e colheu algumas araçás e com uma jarra misturou com a água do rio e deu a "<<nome<<", em alguns minutos o veneno da cobra saiu pela mordida e "<<nome<<" agradeceu ao mago, lhe disse que precisava levar as frutas pra sua vó pra tratar de seu cachorro, o rei levou até sua casa, chegando lá seu cachorro ainda estava respirando, fraco, não tinha muito tempo, o mago Rafaelsen deu a bebida ao cachorro, em alguns minutos o cachorro estava melhor, "<<nome<<" agradeceu ao rei e ao mago. E "<<nome<<" pode brincar novamente com Rox. " <<endl;
+    } else if(escolha==0) {
+        cout << "\n "<<nome<<" tenta correr, porém cobra-cabeçuda é muita rápida e com uma mordida engole "<<nome<<"."<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    } else {
+        cout << "\n Opção não existe, utilize somente opções válidas!"<<endl;
+        cout << "\n Você Perdeu!";
+        return 0;
+    }
+    cout << "\n Parabéns "<<nome<<", Você Ganhou!"<<endl;
+    cout << " Você pegou: "<<conquista; //a variavel float "conquista" informa o resultado da somatória.
+    cout << "/3 conquistas." <<endl;
+    cout << "\n FIM";
+    return 0;
+}
