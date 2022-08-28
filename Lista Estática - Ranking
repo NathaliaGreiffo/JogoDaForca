@@ -1,159 +1,362 @@
 #include <iostream>
+#include <time.h>
 
 using namespace std;
-
-struct TJogador {   //struct q armazena pontuacao e game dos jogadores
-    int game;   //int game do jogador
-    int pontuacao;  //int pontuacao do jogador
+////////////////////////////// LISTA ESTATICA /////////////////////////////////////////////////////////////
+struct TJogador {           //struct q armazena pontuacao e game dos jogadores
+    int jogador;            //int numero do jogador
+    int pontuacao;          //int pontuacao do jogador
+    int game;               //int game do jogador para utilizar no vetor de string
 };
 
-const int CAPACIDADE = 30;  //capacidade max de jogadores
+const int CAPACIDADE = 300;                         //capacidade max de jogadores
+string vetGAME[6] = { "FIFA", "GTA", "TETRIS", "SONIC", "MARIO", "CSGO" };        //vetor de string que utiliza o numero do vetor como indice
 
-struct TListaJogadores{ //struct q armazena lista de jogadores
-    TJogador vetor[CAPACIDADE]; //vetor do tipo TJogador, vetor q armazena jogadores
-    int quantidade; //quantidade de jogadores da lista
+struct TListaJogadores{                             //struct q armazena lista de jogadores
+    TJogador vetor[CAPACIDADE];                     //vetor do tipo TJogador, vetor q armazena jogadores
+    int quantidade;                                 //quantidade de jogadores da lista
 };
 
-void inicializar_lista(TListaJogadores &lista) {  //inicializa lista jogador
-    lista.quantidade = 0;   //zera lista
+void inicializar_lista(TListaJogadores &lista) {    //inicializa lista jogador
+    lista.quantidade = 0;                           //zera lista
 }
 
-void inserir_na_lista(TListaJogadores &lista, TJogador jogador,int pos){
-    if( lista.quantidade >= CAPACIDADE ) {  //se quantidade for maior q a capacidade "Lista Cheia" e retorna
+void inserir_na_lista(TListaJogadores &lista, TJogador jogador,int pos){    //funcao para inserir na lista
+    if( lista.quantidade >= CAPACIDADE ) {          //se quantidade for maior q a capacidade "Lista Cheia" e retorna
         cout << "Lista cheia!" << endl;
-        return;
+        return;                                     //retorna sem inserir
     }
-    if (pos > lista.quantidade){    //se a posicao passada for maior q a quantidade da lista
-        cout << "\nPosicao invalida, pois nao ha valores validos na posicao anterior!" << endl; //imprime posicao invalida
-        return; //retorna
-    }
-
-    // Deslocar elementos
-    for(int i = lista.quantidade; i > pos; i--) { //for para percorrer da quantidade (ultimo elemento adicionado) ate o inicio (0)
-        lista.vetor[i] = lista.vetor[i-1];  //desloca o elemento que estava na posicao(i) para a seguinte
+    if (pos > lista.quantidade){                    //se a posicao passada for maior q a quantidade da lista
+        cout << "\nPosicao invalida, pois nao ha valores validos na posicao anterior!" << endl;
+        return;                                     //retorna sem inserir
+    }    
+    for(int i = lista.quantidade; i > pos; i--) {   //Deslocar elementos, for para percorrer a quantidade (ultimo elemento adicionado) ate o inicio (0)
+        lista.vetor[i] = lista.vetor[i-1];          //desloca o elemento que estava na posicao(i) para a seguinte
     }
 
-    lista.vetor[pos] = jogador;   //atribui na primeira posicao o valor gerado aleatorio no preencher_lista
-    lista.quantidade++; //incrementa quantidade pois aumentou o tamanho da lista
+    lista.vetor[pos] = jogador;                     //atribui na primeira posicao o valor gerado aleatorio no preencher_lista
+    lista.quantidade++;                             //incrementa quantidade pois aumentou o tamanho da lista
 }
 
-void preencher_lista(TListaJogadores & lista) {   //preenche lista com valores aleatorios
-    srand(time(NULL));  //srand para rand gerar valores aleatorios
-    for(int game = 0; game < 3; game++) {   //for para numeros de games
-        for(int pontuacao = 0; pontuacao < 10; pontuacao++) {   //for para numeros de jogaores por game
-            TJogador jogador;   //cria instancia para jogador
-            jogador.game = game;    //atribui valor game do jogador
-            jogador.pontuacao = rand() % 100;   //atribui valor aleatorio para pontucao do jogador
-            inserir_na_lista(lista,jogador,0);  //insere valor gerado para inicio da lista do jogador
-        }
+void preencher_lista(TListaJogadores & lista) {     //preenche lista com valores aleatorios
+    srand(time(NULL));                              //srand para rand gerar valores aleatorios
+    for(int i = CAPACIDADE; i > 0; i--) {           //for para numeros de jogaores por game
+        TJogador jogador;                           //cria instancia para jogador
+        jogador.jogador = i;                        //numero do jogador recebe i (inicia CAPACIDADE e termina como 1)
+        jogador.game = rand() % 6;                  //gera valor aleatorio (0 a 5) para game do jogador, que sera utilizado como indice do vetor de string
+        jogador.pontuacao = rand() % 10000;         //atribui valor aleatorio para pontucao do jogador
+        inserir_na_lista(lista,jogador,0);          //insere valor gerado para inicio da lista do jogador
     }
 }
 
-void imprimir_lista(TListaJogadores lista) {      //imprime lista
-    if(lista.quantidade == 0) { //se quantidade for 0, imprime "Lista vazia"
-        cout << "Lista vazia" << endl;  //imprime "Lista vazia"
-    } else {    //se a quantidade não for 0
+void imprimir_lista(TListaJogadores lista) {        //imprime lista
+    if(lista.quantidade == 0) {                     //se quantidade for 0, imprime "Lista vazia"
+        cout << "Lista vazia" << endl;              //imprime "Lista vazia"
+    } else {                                        //se a quantidade não for 0
         for(int i = 0; i < lista.quantidade; i++) { //for que percorre de 0 à quantidade da lista passada
-            cout << "POSICAO[" << i << "]: " << "TJogador {game: " << lista.vetor[i].game << ", pontuacao: "<< lista.vetor[i].pontuacao << "}" << endl; //imprime "Lista[i]: TJogador { game, pontuacao}"
+            cout << "POSICAO[" << i << "]: " << "Jogador {Jogador: " <<lista.vetor[i].jogador << " | Game: "<< vetGAME[lista.vetor[i].game] << " | Pontuacao: "<< lista.vetor[i].pontuacao << "}" << endl;
         }
     }
     cout << endl;
 }
 
-void remover_lista(TListaJogadores &lista, int pos) {   //remove item do inicio da lista passada
-
+void remover_lista(TListaJogadores &lista, int pos) {       //remove item do inicio da lista passada
     if(lista.quantidade == 0 || pos > lista.quantidade-1) { //se quantidade da lista = 0
-        cout << "Lista vazia ou posicao invalida"; //imprime lista vazia
-        return;
+        cout << "Lista vazia ou posicao invalida";
+        return;                                             //retorna sem remover
+    }
+    for(int i = pos; i < lista.quantidade; i++) {           //for para percorrer da quantidade (ultimo elemento adicionado) ate o inicio (0)
+        lista.vetor[i] = lista.vetor[i+1];                  //desloca o elemento que estava na posicao(i) para a seguinte
     }
 
-    // Deslocar elementos
-    for(int i = pos; i < lista.quantidade; i++) { //for para percorrer da quantidade (ultimo elemento adicionado) ate o inicio (0)
-        lista.vetor[i] = lista.vetor[i+1];  //desloca o elemento que estava na posicao(i) para a seguinte
-    }
-
-    lista.quantidade--; //incrementa quantidade pois aumentou o tamanho da lista
+    lista.quantidade--;                                     //incrementa quantidade pois aumentou o tamanho da lista
 }
 
 TJogador obter_item_lista(TJogador jogadorTemp, TListaJogadores lista, int pos) {    //funcao que obtem posicao
-
-    if(pos < 0 || pos >= CAPACIDADE) {  //se posicao for menor q 0 ou posicao for maior ou igual a capacidade max
-        jogadorTemp.game = -1; //game invalido
-        jogadorTemp.pontuacao = -1;    //pontuacao invalida
-        return jogadorTemp;    //retorna invalida
+    if(pos < 0 || pos >= CAPACIDADE) {                      //se posicao for menor q 0 ou posicao for maior ou igual a capacidade max
+        jogadorTemp.pontuacao = -1;                         //pontuacao invalida
+        return jogadorTemp;                                 //retorna invalida
     }
-
-    return lista.vetor[pos];    //retorna posicao referente ao jogador
-
+    return lista.vetor[pos];                                //retorna posicao referente ao jogador
 }
 
-void Sort(TListaJogadores &lista) { //funcao para sort top 10
-    bool ordenado = false;
-    int j = 0;  //define j = 0, para aux no for
-    TListaJogadores tempLista;
-    while (!ordenado) { //repete oenquanto ordenado for falso
-        ordenado = true;    //define ordenado como true
-        j++;
-        for (int i = 0; i < lista.quantidade - j; i++) {   //for que percorre de 0 á (quantidade da lista - j), j tem como funcao diminuir a quantidade da lista para fazer a ordenacao
+void Sort(TListaJogadores &lista) {                         //funcao para sort top 10
+    bool ordenado = false;                                  //define ordenado como false
+    int j = 0;                                              //define j = 0, para aux no for
+    TListaJogadores tempLista;                              //cria nova instancia para tempLista
+    while (!ordenado) {                                     //repete oenquanto ordenado for falso
+        ordenado = true;                                    //define ordenado como true
+        j++;                                                //incrementa j
+        for (int i = 0; i < lista.quantidade - j; i++) {                      //for que percorre de 0 á (quantidade da lista - j), j tem como funcao diminuir a quantidade da lista para fazer a ordenacao
             if (lista.vetor[i].pontuacao < lista.vetor[i + 1].pontuacao) {    //se a pontuacao do jogador da lista for menor q a pontuacao do jogador da lista seguinte
-                tempLista.vetor[i] = lista.vetor[i];   //pontuacao temp recebe pontuacao do jogador da lista seguinte
-                lista.vetor[i] = lista.vetor[i + 1];  //jogador da posicao [i] = jogador da posicao seguinte
-                lista.vetor[i + 1] = tempLista.vetor[i];   //pontuacao do jogador seguinte recebe pntuacao temp
-                ordenado = false;   //define ordenado como falso
+                tempLista.vetor[i] = lista.vetor[i];                          //pontuacao temp recebe pontuacao do jogador da lista seguinte
+                lista.vetor[i] = lista.vetor[i + 1];                          //jogador da posicao [i] = jogador da posicao seguinte
+                lista.vetor[i + 1] = tempLista.vetor[i];                      //pontuacao do jogador seguinte recebe pntuacao temp
+                ordenado = false;                                             //define ordenado como falso
             }
         }
     }
-    if (lista.quantidade < 10){    //se quantidade da lista for menor q 10
+    if (lista.quantidade < 10){                                     //se quantidade da lista for menor q 10
         cout << "Nao ha valores suficientes para TOP 10!" << endl;  //imprime "Nao ha valores suficientes para TOP 10!"
-        lista.quantidade = 0;  //define quantidade da lista top 10 (rank10) para 0
-    }else{  //se a quantidade da lista nao for menor q 10
-        lista.quantidade = 10; //define quantidade da lista top 10 (rank10) para 10
+        lista.quantidade = 0;                                       //define quantidade da lista top 10 (rank10) para 0
+    }else{                                                          //se a quantidade da lista nao for menor q 10
+        lista.quantidade = 10;                                      //define quantidade da lista top 10 (rank10) para 10
     }
-}
-
-bool contem_item_lista(TJogador jogadorTemp, TListaJogadores lista){    //funcao responsavel em retornar valor true caso os dados passados se encontram na lista
-    for(int i = 0; i < lista.quantidade; i++){
-        if(jogadorTemp.pontuacao == lista.vetor[i].pontuacao && jogadorTemp.game == lista.vetor[i].game){   //se pontuacao e game do jogadortemp (dados passados no funcao) forem iguais a algum valor presente na lista, retorna true
-            return true;
-        }
-    }
-    return false;   //retorna falso caso nao encontre o valor passado na lista
 }
 
 int descobrir_indice(TJogador jogadorTemp, TListaJogadores lista){  //funcao responsavel em retornar valor [i] caso os dados passados se encontram na lista, retorna [i] (posicao daquele dado na lista)
-    for(int i = 0; i < lista.quantidade; i++){
-        if(jogadorTemp.pontuacao == lista.vetor[i].pontuacao && jogadorTemp.game == lista.vetor[i].game){   //se pontuacao e game do jogadortemp (dados passados no funcao) forem iguais a algum valor presente na lista, retorna [i]
-            return i;   //retorna [i], posicao do vetor da lista que possui dado igual ao passdo na funcao (jogadorTemp)
+    for(int i = 0; i < lista.quantidade; i++){                      //for para percorrer quantidade da lista, inicia i em 0 e termina lista.quantidade
+        if(jogadorTemp.pontuacao == lista.vetor[i].pontuacao){      //se pontuacao e game do jogadortemp (dados passados no funcao) forem iguais a algum valor presente na lista, retorna [i]
+            return i;                                               //retorna [i], posicao do vetor da lista que possui dado igual ao passdo na funcao (jogadorTemp)
         }
     }
-
-    return -1;  //retorna -1 caso nao haja dado semelhante a passado na funcao
+    return -1;                                                      //retorna -1 caso nao haja dado semelhante a passado na funcao
 }
 
-void gerar_rank10(TListaJogadores &lista, TListaJogadores &rank10, TJogador &jogador){
-    for(int i = 0; i < lista.quantidade; i++){
-        rank10.vetor[i] = obter_item_lista(jogador, lista, i);
+void gerar_rank10(TListaJogadores &lista, TListaJogadores &rank10, TJogador &jogador){      //funcao para gerar rank10
+    for(int i = 0; i < lista.quantidade; i++){                                              //for q inicia em 0 e termina em lista.quantidade
+        rank10.vetor[i] = obter_item_lista(jogador, lista, i);                              //rank na posicao[i], recebe dado da mesma posicao da lista
     }
-    rank10.quantidade = lista.quantidade;
-    Sort(rank10);
+    rank10.quantidade = lista.quantidade;                                                   //quantidade do rank = quantidade da lista
+    Sort(rank10);                                                                           //funcao Sort para ordenar rank 10
 }
 
-int main() {
+void menu(){
+    TJogador jogadorTemp;                   //nova instancia de jogador -> jogador temporario (tipo TJogador), necessaria para Sort e Rank10
+    TListaJogadores lista;                  //nova instancia de lista (tipo TListaJogadores)
+    TListaJogadores rank10;                 //nova instancia de rank10 (tipo TListaJogadores)
+    int menu, i;                            //menu = 0, para funcao menu, visual
+    lista.quantidade = 0;                   //quantidade da lista = 0
+        do{                                 //laço de repetição do (faça...)
+            int pos;                        //posicao a ser inserida
+            system("cls");                                              //visual, limpa tela do terminal
+            cout << "TRABALHO M1" << endl << endl;
+            cout << "01 - ZERAR LISTA" << endl;
+            cout << "02 - GERAR "<< CAPACIDADE << " JOGADORES" << endl;
+            cout << "03 - IMPRIMIR LISTA" << endl;
+            cout << "04 - ORDENAR TOP 10 PONTUACAO" << endl;
+            cout << "05 - INSERIR NO INICIO DA LISTA" << endl;
+            cout << "06 - INSERIR NO FIM DA LISTA" << endl;
+            cout << "07 - INSERIR NA POSICAO DA LISTA" << endl;
+            cout << "08 - REMOVER DA POSICAO DA LISTA" << endl;
+            cout << "09 - OBTER ITEM DA LISTA" << endl;
+            cout << "10 - DESCOBRIR ITEM NA LISTA" << endl;
+            cout << "00 - PARA SAIR" << endl << "-> ";
+            cin >> menu;          //recebe funcao do menu
+            cout << endl;
 
+            switch (menu) {                     //switch para menu
+            case 1:                             //case 1, ZERAR LISTA
+                system("cls");                  //visual, limpa tela do terminal
+                inicializar_lista(lista);       //zera lista
+                inicializar_lista(rank10);      //zera rank10
+                cout << "LISTA ZERADA" << endl;
+                system("pause");                //visual, pausa terminal
+                system("cls");                  //visual, limpa tela do terminal
+                break;                          //sai da case, e volta pro menu
+            case 2:                             //case 2, GERAR JOGADORES
+                system("cls");                  //visual, limpa tela do terminal
+                inicializar_lista(lista);       //zera lista
+                inicializar_lista(rank10);      //zera rank10
+                preencher_lista(lista);         //preenche lista com valores aletatorios
+                cout << "GERADO" << endl << endl;
+                system("pause");                //visual, pausa terminal
+                system("cls");                  //visual, limpa tela do terminal
+                break;                          //sai da case, e volta pro menu
+
+            case 3:                             //case 3, IMPRIMIR LISTA DE JOGADORES
+                system("cls");                  //visual, limpa tela do terminal
+                cout << "IMPRIMIR LISTA DE JOGADORES" << endl;
+                imprimir_lista(lista);          //imprime lista na tela
+                system("pause");                //visual, pausa terminal
+                system("cls");                  //visual, limpa tela do terminal
+                break;                          //sai da case, e volta pro menu
+
+            case 4:                             //case 4, IMPRIMIR RANK TOP10
+                system("cls");                  //visual, limpa tela do terminal
+                cout << "IMPRIMIR RANK TOP 10" << endl << endl;
+                rank10 = lista;                 //rank 10 recebe valores da lista
+                Sort(rank10);                   //sort recebe rank10 e ordena em top10
+                imprimir_lista(rank10);         //imprime rank10
+                system("pause");                //visual, pausa terminal
+                system("cls");                  //visual, limpa tela do terminal
+                break;                          //sai da case, e volta pro menu
+
+            case 5:                             //case 5, INSERIR NO INICIO DA LISTA
+                system("cls");                  //visual, limpa tela do terminal
+                cout << "INSERIR NO INICIO DA LISTA" << endl;
+                cout << "Digite o jogador: ";
+                cin >> jogadorTemp.jogador;     //recebe numero do jogador no jogadorTemp
+                cout << "Digite o game: ";
+                cin >> jogadorTemp.game;        //recebe numero do game no jogadorTemp
+                if(jogadorTemp.game > 5){       //se game do jogador digitado for maior q 5
+                    cout << "Game digitado nao existe" << endl;
+                    system("pause");            //visual, pausa terminal
+                    break;                      //sai da case, e volta pro menu
+                }
+                cout << "Digite a pontuacao: ";
+                cin >> jogadorTemp.pontuacao;           //recebe numero da pontuacao no jogadorTemp
+                inserir_na_lista(lista,jogadorTemp, 0); //insere na lista os dados digitados no inicio da lista
+                imprimir_lista(lista);                  //imprime lista na tela
+                system("pause");                        //visual, pausa terminal
+                system("cls");                          //visual, limpa tela do terminal
+                break;                                  //sai do case, e volta pro menu
+
+            case 6:                                     //case 6, INSERIR NO FIM DA LISTA
+                system("cls");                          //visual, limpa tela do terminal
+                cout << "INSERIR NO FIM DA LISTA" << endl;
+                cout << "Digite o jogador: ";
+                cin >> jogadorTemp.jogador;             //recebe numero do jogador no jogadorTemp
+                cout << "Digite o game: ";
+                cin >> jogadorTemp.game;                //recebe numero do game no jogadorTemp
+                if(jogadorTemp.game > 5){               //se game do jogador digitado for maior q 5
+                    cout << "Game digitado nao existe" << endl;
+                    system("pause");                    //visual, pausa terminal
+                    break;                              //sai da case, e volta pro menu
+                }
+                cout << "Digite a pontuacao: ";
+                cin >> jogadorTemp.pontuacao;                           //recebe numero da pontuacao no jogadorTemp
+                inserir_na_lista(lista,jogadorTemp, lista.quantidade);  //insere na lista os dados digitados no fim da lista
+                imprimir_lista(lista);                                  //imprime lista na tela
+                system("pause");                                        //visual, pausa terminal
+                system("cls");                                          //visual, limpa tela do terminal
+                break;                                                  //sai do case, e volta pro menu
+
+            case 7:                                                     //case 7, INSERIR NA POSICAO DA LISTA
+                system("cls");                                          //visual, limpa tela do terminal
+                cout << "INSERIR NA POSICAO DA LISTA" << endl << endl;
+                if(lista.quantidade == 0){                              //se quantidade da lista = 0
+                    cout << "Lista vazia!" << endl;
+                    system("pause");                                    //visual, pausa terminal
+                    system("cls");                                      //visual, limpa tela do terminal
+                    break;                                              //sai do case, e volta pro menu
+                }
+                cout << "Digite a posicao a ser inserida (0 a " << lista.quantidade-1 << "): ";
+                cin >> pos;                                     //recebe posicao
+                cout << "Digite o jogador: ";
+                cin >> jogadorTemp.jogador;                     //recebe numero da pontuacao no jogadorTemp
+                cout << "Digite o game: ";
+                cin >> jogadorTemp.game;                        //recebe numero do game no jogadorTemp
+                if(jogadorTemp.game > 5){                       //se game do jogador digitado for maior q 5
+                    cout << "Game digitado nao existe" << endl;
+                    system("pause");                            //visual, pausa terminal
+                    break;                                      //sai do case, e volta pro menu
+                }
+                cout << "Digite a pontuacao: ";
+                cin >> jogadorTemp.pontuacao;                   //recebe numero da pontuacao no jogadorTemp
+                inserir_na_lista(lista,jogadorTemp, pos);       //insere na lista os dados digitados na posicao digitada
+                imprimir_lista(lista);                          //imprime lista na tela
+                system("pause");                                //visual, pausa terminal
+                system("cls");                                  //visual, limpa tela do terminal
+                break;                                          //sai do case, e volta pro menu
+
+            case 8:                                             //case 8, REMOVER DA POSICAO DA LISTA
+                system("cls");                                  //visual, limpa tela do terminal
+                cout << "REMOVER DA POSICAO DA LISTA" << endl << endl;
+                if(lista.quantidade == 0){                      //se quantidade da lista = 0
+                    cout << "Lista vazia!" << endl;
+                    system("pause");                            //visual, pausa terminal
+                    system("cls");                              //visual, limpa tela do terminal
+                    break;                                      //sai do case, e volta pro menu
+                }
+                cout << "Digite a posicao a ser removida (0 a " << lista.quantidade-1 << "): ";
+                cin >> pos;                                     //recebe posicao
+                remover_lista(lista, pos);                      //remove da lista os dados digitados na posicao digitada
+                imprimir_lista(lista);                          //imprime lista na tela
+                system("pause");                                //visual, pausa terminal
+                system("cls");                                  //visual, limpa tela do terminal
+                break;                                          //sai do case, e volta pro menu
+
+            case 9:                                             //case 9, OBTER ITEM DA LISTA
+                system("cls");                                  //visual, limpa tela do terminal
+                cout << "OBTER ITEM DA LISTA" << endl << endl;
+                if(lista.quantidade == 0){                      //se quantidade = 0
+                    cout << "Lista vazia!" << endl;
+                    system("pause");                            //visual, pausa terminal
+                    system("cls");                              //visual, limpa tela do terminal
+                    break;                                      //sai do case, e volta pro menu
+                }
+                cout << "Digite a posicao a ser obtida (0 a " << lista.quantidade-1 << "): ";
+                cin >> pos;                                     //recebe posicao
+                if(pos > lista.quantidade-1){                   //se posicao for maior que (quantidade da lista)-1
+                    cout << "Posicao maior que permitida" << endl;
+                    system("pause");                            //visual, pausa terminal
+                    system("cls");                              //visual, limpa tela do terminal
+                    break;                                      //sai do case, e volta pro menu
+                }
+                jogadorTemp = obter_item_lista(jogadorTemp,lista,pos);  //jogadorTemp recebe item da lista da posicao digitada
+                if(jogadorTemp.pontuacao == -1){                        //se pontuacao do jogadorTemp = -1
+                    cout << "jogador invalido!" << endl;
+                    system("pause");                                    //visual, pausa terminal
+                    system("cls");                                      //visual, limpa tela do terminal
+                    break;                                              //sai do case, e volta pro menu
+                }
+                i = descobrir_indice(jogadorTemp,lista);                //i recebe posicao do vetor da lista q possui dados iguais ao digitado
+                cout << "POSICAO[" << i << "]: " << "Jogador {Jogador: " << jogadorTemp.jogador << " | Game: " << vetGAME[jogadorTemp.game] << " | Pontuacao: " << jogadorTemp.pontuacao << "}" << endl << endl;
+                system("pause");                                        //visual, pausa terminal
+                system("cls");                                          //visual, limpa tela do terminal
+                break;                                                  //sai do case, e volta pro menu
+
+            case 10:                                                    //case 10, DESCOBRIR ITEM NA LISTA
+                system("cls");                                          //visual, limpa tela do terminal
+                cout << "DESCOBRIR ITEM NA LISTA" << endl << endl;
+                if(lista.quantidade == 0){                              //se quantidade da lista = 0
+                    cout << "Lista vazia!" << endl;
+                    system("pause");                                    //visual, pausa terminal
+                    system("cls");                                      //visual, limpa tela do terminal
+                    break;                                              //sai do case, e volta pro menu
+                }
+                cout << "Digite a pontuacao: ";
+                cin >> jogadorTemp.pontuacao;                           //recebe pontuacao do jogadorTemp
+                i = descobrir_indice(jogadorTemp,lista);                //i recebe posicao do vetor da lista q possui dados iguais ao digitado
+                if(i == -1){                                            //se i = -1
+                    cout << endl << "Nao contem na lista." << endl;
+                }else{                                                  //sen i nao for = -1
+                    cout << endl << "Esse jogador contem na lista!" << endl;
+                    cout << "POSICAO[" << i << "]: " << "Jogador {Jogador: " << jogadorTemp.jogador << " | Game: " << vetGAME[jogadorTemp.game] << " | Pontuacao: " << jogadorTemp.pontuacao << "}" << endl << endl;
+                }
+                system("pause");                                        //visual, pausa terminal
+                system("cls");                                          //visual, limpa tela do terminal
+                break;                                                  //sai do case, e volta pro menu
+
+            default:                        //case default serve para caso o usuario digite valores q nao possuem case
+                menu = 0;                   //define menu = 0 para o programa terminar
+                break;                      //sai do case, e volta pro menu
+            }
+        }while(menu >= 1 && menu <= 10);    //repeticao do menu para cases, caso menu seja diferente dessas posicoes, programa encerra
+}
+
+void sem_menu(){
+    TJogador jogador;                       //nova instancia de jogador -> jogador (tipo TJogador)
     TListaJogadores lista;                  //nova instancia de lista -> lista (tipo TListaJogadores)
-    TJogador jogador;
     TListaJogadores rank10;                 //nova instancia de lista -> rank10 (tipo TListaJogadores)
+    system("cls");                          //visual, limpa tela do terminal
     inicializar_lista(lista);               //inicializa lista lista, zera a quantidade
     inicializar_lista(rank10);              //inicaaliza lista rank10, zera a quantidade
     preencher_lista(lista);                 //preenche lista com valores aletatorios
     cout << "LISTA GERAL" << endl;          //imprime lista geral
     imprimir_lista(lista);                  //imprime lista na tela
-    gerar_rank10(lista, rank10, jogador);
+    gerar_rank10(lista, rank10, jogador);   //gera rank10
     cout << "LISTA TOP 10" << endl;         //imprime lista geral
     imprimir_lista(rank10);                 //imprime rank10
+}
 
-    //contem_item                           //recebe o dado e verifica se ele está na lista. Se estiver, retorna verdadeiro, falso caso contrário;
-    //descobrir_item                        //recebe o dado e busca-o na lista. Se estiver na lista, retorna à posição do dado na lista, caso contrário, retorna -1.
+int main() {
+////////////////////////////// LISTA ESTATICA /////////////////////////////////////////////////////////////
+    int escolha;
+    cout << "DIGITE:" << endl;
+    cout << "1 - MENU" << endl;
+    cout << "2 - SEM MENU" << endl;
+    cout << "0 - SAIR" << endl;
+    cin >> escolha;             //recebe escolha dp menu
 
+    switch (escolha) {          //switch para menu
+    case 1:                     //case 1, menu
+        menu();                 //menu visual, para utilizar funcoes do codigo
+        break;                  //sai da case
+    case 2:                     //case 2, sem menu
+        sem_menu();             //sem menu, inicializa lista, preenche, imprime lista, gera rank10 e imprime rank10
+        break;                  //sai da case
+    }
     return 0;
 }
