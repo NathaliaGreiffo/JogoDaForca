@@ -1,0 +1,606 @@
+#include <iostream>
+#include <time.h>
+
+using namespace std;
+////////////////////////////// LISTA ENCADEADA DUPLA ////////////////////////////////////////////////////////
+struct TJogadorEncadeadoDupla{        //struct q armazena pontuacao, jogador,game e proxima posicao dos jogadores
+    int jogador;                        //int numero do jogador
+    int pontuacao;                      //int pontuacao do jogador
+    int game;                           //int game do jogador para utilizar no vetor de string
+    TJogadorEncadeadoDupla* proximo;  //ponteiro do tipo (TJogadorEncadeadoDupla) que aponta para a próxima posicao
+    TJogadorEncadeadoDupla* anterior;  //ponteiro do tipo (TJogadorEncadeadoDupla) que aponta para a posicao anterior
+};
+
+const int CAPACIDADE = 300;                         //capacidade max de jogadores
+string vetGAME[6] = { "FIFA", "GTA", "TETRIS", "SONIC", "MARIO", "CS" };        //vetor de string que utiliza o numero do vetor como indice
+
+struct TListaEncadeadaDupla{          //struct q armazena lista de jogadores
+    TJogadorEncadeadoDupla* inicio;   //ponteiro do tipo (TJogadorEncadeadoDupla) que aponta para o inicio da lista
+    TJogadorEncadeadoDupla* fim;   //ponteiro do tipo (TJogadorEncadeadoDupla) que aponta para o inicio da lista
+};
+
+void inicializar_lista_ED(TListaEncadeadaDupla& ListaED){  // para voltar zerado e nao com lixo de memoria
+   ListaED.inicio = nullptr;                                 //define inicio da lista como null
+   ListaED.fim = nullptr;                                 //define fim da lista como null
+}
+
+int obter_quantidade_ED(TListaEncadeadaDupla& ListaED){              // testar se a sequencia esta correta na lista
+    int i = 0;                                                      //i, contador para obter a quantidade de posicoes que a lista apresenta com base no nav
+    if(ListaED.inicio == nullptr){                                  //se inicio da lista = null
+        return 0;                                                   //retorno 0 caso inicio for = null, ou seja lista vazia
+    }
+    for(TJogadorEncadeadoDupla* nav=ListaED.inicio; nav!=nullptr; nav=nav-> proximo){ // for que percorre do inicio ate o final da lista, so repete quando nav for diferente de null
+        i++;                                                        //incrementa i, para obter a quantidade de elementos da lista
+    }
+    return i;                                                       //apos ter saido do for (percorre a lista), retorna o valor somado por i
+}
+
+void inserir_posicao_na_lista_ED(TListaEncadeadaDupla& ListaED, int jogador, int game, int pontuacao, int pos){  //funcao para inserir na lista
+    if (obter_quantidade_ED(ListaED) >= CAPACIDADE){                       //se a quantidade da lista for maior ou igual a CAPACIDADE
+        cout << "Lista Cheia!" << endl;
+        return;                                                         //retorna sem inserir
+    }
+    if (pos<0){                                                         //se posicao for menor q 0
+        cout << "Posicao invalida" << endl;
+        return;                                                         //retorna sem inserir
+    }
+    if (jogador < 0 || game < 0 || game > 5 || pontuacao < 0){          //se posicao for menor q 0
+        cout << "Insercao invalida" << endl;
+        return;                                                         //retorna sem inserir
+    }
+    TJogadorEncadeadoDupla* nav = ListaED.inicio;                     //define ponteiro nav (tipo TJogadorEncadeadoDupla) = inicio da lista
+    TJogadorEncadeadoDupla* novo = new TJogadorEncadeadoDupla;      //cria o ponteiro novo (tipo TJogadorEncadeadoDupla), alocado dinamicamente
+    novo->jogador = jogador;                                        //jogador do novo = jogador
+    novo->game = game;                                              //game do novo = game
+    novo->pontuacao = pontuacao;                                    //pontuacao do novo = pontuacao
+    if(pos == 0){                                                   //se posicao = 0
+        novo->proximo = ListaED.inicio;                             //proximo de novo = inicio da lista
+        ListaED.inicio = novo;                                      //inicio da lista = novo
+        if(novo->proximo != nullptr){                               // se o próximo de novo não for nulo
+            nav = novo->proximo;                                    //este elemento será o próximo do novo elemento inserido no início
+            nav->anterior = novo;                                   //e o anterior deste elemento será o novo dado inserido no início da lista
+        }else{                                                      //se proximo de novo for nulo
+            ListaED.fim = novo;                                     //define fim da lista como novo
+            novo->proximo = nullptr;                                //proximo de novo recebe null
+        }
+        novo->anterior = nullptr;                                   //anterior de novo recebe null
+    }
+    else if(ListaED.inicio != nullptr){                             //se inicio da lista for diferente de null
+        for(int i = 0; i < pos-1; i++){                             //for para percorrer de 0 a posicao-1
+            nav = nav->proximo;                                     //nav = proximo de nav
+        }
+        TJogadorEncadeadoDupla* nav2;                               //cria nav2 para navegar pela lista
+        nav2 = nav->proximo;                                        //proximo de nav2 recebe proximo de nav
+        novo->proximo = nav->proximo;                               //proximo de novo recebe proximo de nav
+        nav2->anterior = novo;                                      //anterior de nav2 recebe novo
+        nav->proximo = novo;                                        //proximo de nav recebe novo
+        novo->anterior = nav;                                       //anterior de novo recebe nav
+    }
+
+}
+
+void inserir_inicio_na_lista_ED(TListaEncadeadaDupla& ListaED, int jogador, int game, int pontuacao){    //inserir no inicio da lista
+    inserir_posicao_na_lista_ED(ListaED, jogador, game, pontuacao, 0);             //inserir na posicao 0
+}
+
+bool contem_item_lista_ED(TListaEncadeadaDupla& ListaED, int pontuacao){      //funcao que retorna bool para se o item contem na lista
+    TJogadorEncadeadoDupla* nav = ListaED.inicio;        //define ponteiro nav (tipo TJogadorEncadeadoDupla) = inicio da lista
+    if (nav == nullptr) {                                  //se nav = null, lista vazia
+        return false;                                      //retorna false
+    }
+    else {                                                 //se nav diferente de null, lista nao esta vazia
+        while (nav->proximo != nullptr) {                  //enquanto proximo de nav for diferente de null, ou seja o nav percorre a lista
+            nav = nav->proximo;                            //nav = proximo de nav
+            if (pontuacao == nav->pontuacao) {             //se pontuacao = pontuacao de nav
+                return true;                               //retorna true, ou seja encontrou a pontuacao na lista
+            }
+        }
+        if (pontuacao == nav->pontuacao) {                 //se pontuacao = pontuacao de nav
+            return true;                                   //retorna true, ou seja encontrou a pontuacao na lista
+        }
+    }
+    return false;                                          //retorna falso caso nao encontre o valor passado na lista
+}
+
+void preencher_lista_ED(TListaEncadeadaDupla& ListaED){           //preenche lista
+    int jogador;                                                    //cria int jogador
+    int game;                                                       //cria int game
+    int pontuacao;                                                  //cria int pontuacao
+    srand(time(NULL));                                              //srand para rand gerar valores aleatorios
+    for(int i = CAPACIDADE; i > 0; i--) {                           //for inicia em CAPACIDADE e repete ate 0
+        do{                                                         //laço de repetição, faça enquanto valor gerado nao contem na lista
+            pontuacao = rand() % CAPACIDADE*9;                      //atribui valor aleatorio para pontucao do jogador com base na CAPACIDADE*9
+        }while(contem_item_lista_ED(ListaED, pontuacao) == true);   //enquanto valor gerado nao contem na lista
+        game = rand() % 6;                                          //game recebe valor aleatorios de 0 a 5
+        jogador = i;                                                //jogador recebe i, aux do for para contagem
+        inserir_inicio_na_lista_ED(ListaED,jogador,game,pontuacao); //insere valor gerado para inicio da lista do jogador
+    }
+}
+
+void inserir_fim_na_lista_ED(TListaEncadeadaDupla& ListaED, int jogador, int game, int pontuacao){   //insere no fim da lista
+    if (obter_quantidade_ED(ListaED) >= CAPACIDADE){                     //se a quantidade da lista for maior ou igual a CAPACIDADE
+        cout << "Lista Cheia!" << endl;
+        return;                                                       //retorna sem inserir
+    }
+    if (jogador < 0 || game < 0 || game > 5 || pontuacao < 0){        //se jogador < 0 ou game < 0 ou game > 5 ou pontuacao < 0
+        cout << "Insercao invalida" << endl;
+        return;                                                       //retorna sem inserir
+    }
+    TJogadorEncadeadoDupla* novo = new TJogadorEncadeadoDupla;  //cria o ponteiro novo (tipo TJogadorEncadeadoDupla), alocado dinamicamente
+    novo->jogador = jogador;                                        //jogador do novo = jogador
+    novo->game = game;                                              //game do novo = game
+    novo->pontuacao = pontuacao;                                    //pontuacao do novo = pontuacao
+    novo->proximo = nullptr;                                        //proximo de novo = null
+    if(ListaED.inicio == nullptr){                                  //se inicio da lista = null
+        ListaED.inicio = novo;                                      //inicio da lista = novo
+        novo->anterior = nullptr;
+    }
+    else {                                                  //se o inicio da lista nao for null
+        TJogadorEncadeadoDupla* nav = ListaED.fim;      //define ponteiro nav (tipo TJogadorEncadeadoDupla) = inicio da lista
+        nav->proximo = novo;                            //proximo de nav = novo
+        novo->anterior = nav;
+    }
+    ListaED.fim = novo;
+}
+
+void remover_inicio_na_lista_ED(TListaEncadeadaDupla& ListaED){   //remover inicio da lista
+    if(ListaED.inicio == nullptr){                                  //se inicio da lista = null
+        cout << "Lista vazia!" << endl;
+        return;                                                   //retorno 0 caso inicio for = null, ou seja lista vazia
+    }
+    TJogadorEncadeadoDupla* apagar = ListaED.inicio;              //cria o ponteiro apagar (tipo TJogadorEncadeadoDupla) = inicio da lista
+    if(ListaED.inicio->proximo == nullptr){                         //se proximo do inicio da lista = null
+        ListaED.inicio = nullptr;                                   //inicio da lista = null
+    }
+    else{                                                           //se o proximo do inicio da lista nao for null
+
+        ListaED.inicio = ListaED.inicio->proximo;                   //inicio da lista = proximo do inicio da lista
+        ListaED.inicio->anterior = nullptr;
+    }
+    delete apagar;                                                  //delete apagar
+}
+
+void remover_fim_na_lista_ED(TListaEncadeadaDupla& ListaED){      //remover fim da lista
+    if (ListaED.inicio->proximo == nullptr) {                       //se proximo do inicio da lista = null
+        remover_inicio_na_lista_ED(ListaED);                        //remover inicio da lista (lista)
+    }
+    else {                                                          //se o proximo do inicio da lista nao for null
+        TJogadorEncadeadoDupla* apagar = ListaED.inicio;          //cria o ponteiro apagar (tipo TJogadorEncadeadoDupla) = inicio da lista
+        TJogadorEncadeadoDupla* nav = nullptr;                    //define ponteiro nav (tipo TJogadorEncadeadoDupla) = null
+        while (apagar->proximo != nullptr) {                        //enquanto proximo de apagar for diferente de null
+            nav = apagar;                                           //nav = apagar
+            apagar = apagar->proximo;                               //apagar = proximo de apagar
+        }
+        ListaED.fim = nav;
+        nav->proximo = nullptr;                                     //proximo de nav = null
+        delete apagar;                                              //delete apagar
+    }
+}
+
+void remover_posicao_na_lista_ED(TListaEncadeadaDupla& ListaED, int pos){ //remover na posicao da lista
+    TJogadorEncadeadoDupla* apagar = ListaED.inicio;                      //cria o ponteiro apagar (tipo TJogadorEncadeadoDupla) = inicio da lista
+    TJogadorEncadeadoDupla* nav = nullptr;                                //define ponteiro nav (tipo TJogadorEncadeadoDupla) = null
+        if (pos < 0 || ListaED.inicio == nullptr) {                         //se pos for menor 0
+            cout << "Posicao invalida" << endl;
+            return;                                                         //retorna se, remover
+        }
+        if (pos == 0) {                                                     //se posicao = 0
+            remover_inicio_na_lista_ED(ListaED);                            //remover inicio da lista
+        }
+        else {                                                              //se a posicao nao for = 0
+            int contPosicao = 0;                                            //contPosicao = 0
+            while( apagar != nullptr && contPosicao < pos ) {               //enquanto apagar for diferente de null e contPosicao for menor posicao
+                nav = apagar;                                               //nav = apagar
+                apagar = apagar->proximo;                                   //apagar = proximo de apagar
+                contPosicao++;                                              //incrementa contPosicao
+            }
+            if(apagar == nullptr) {                                         //se apagar = null
+                cout << "Nao posso apagar";
+            } else {                                                        //se apagar for diferente de null
+                if( apagar->proximo == nullptr ) {                          //proximo de apagar = null
+                    remover_fim_na_lista_ED(ListaED);                       //remover fim da lista
+                } else {                                                    //se o proximo de apagar for diferente de null
+                    TJogadorEncadeadoDupla* nav2;                           //cria nav2 para navegar pela lista
+                    nav2 = apagar->proximo;                                 //nav2 recebe proximo de que sera apagado
+                    nav2->anterior = nav;                                   //anterior de nav2 recebe nav
+                    nav->proximo = apagar->proximo;                         //proximo de nav = proximo de apagar
+                    delete apagar;                                          //delete apagar
+                }
+            }
+        }
+    }
+
+int obter_item_da_lista_ED(TListaEncadeadaDupla& ListaED, int pos){       //obter item da lista, obtem o dado da lista referente a posicao e lista passadas
+    if (pos < 0 || ListaED.inicio == nullptr) {                             //se pos for menor que 0 ou inicio da lista = null
+        return -1;                                                          //return -1 e nao obtem item
+    }
+    TJogadorEncadeadoDupla* nav = ListaED.inicio;                         //define ponteiro nav (tipo TJogadorEncadeadoDupla) = inicio da lista
+    for (int i = 0; i < pos; i++) {                                         //for que percorre, inicia 0 e finaliza quando menor que posicao
+        nav = nav->proximo;                                                 //nav = proximo de nav
+        if (nav == nullptr) {                                               //se nav = null
+            return -1;                                                      //retorna -1, e nao obtem item
+        }
+    }
+    return nav->pontuacao;                                                  //retorna item referente a lista e posicao passadas
+}
+
+int descobrir_indice_lista_ED(TListaEncadeadaDupla& ListaED, int pontuacao){  //funcao responsavel em retornar valor [i] caso os jogadors passados se encontram na lista, retorna [i] (posicao daquele jogador na lista)
+    int i = 0;                                                                  //i = 0
+    for (TJogadorEncadeadoDupla* nav = ListaED.inicio; nav != nullptr; nav = nav->proximo, i++) { //for q percorre inicio da lista ate o final (nav=null)
+        if (pontuacao == nav->pontuacao) {                                      //pontuacao = pontuacao de nav
+            return i;                                                           //retorna i (indice/posicao)
+        }
+    }
+    return -1;                                                                  //retorna -1, caso nao descubra a pontuacao na lista
+}
+
+int obter_posicao_ListaED(TListaEncadeadaDupla& ListaED, TJogadorEncadeadoDupla* nav){ //funcao responsavel em retornar valor [i] caso os jogadors passados se encontram na lista, retorna [i] (posicao daquele jogador na lista)
+    int i = 0;                                                                             //i, contador para obter a posicao exata que se encontra o dado passado na lista
+    for (TJogadorEncadeadoDupla* nav2 = ListaED.inicio; nav2 != nullptr; nav2 = nav2->proximo, i++) { //nav2 percorre do inicio da lista ate o fim
+        if (nav2 == nav) {                                                                 //se nav2 = nav
+            return i;                                                                      //retorna posicao referente ao dado
+        }
+    }
+    return -1;                                                                             //retorna -1 caso nao encontre dado na lista
+}
+
+void imprimir_lista_ED(TListaEncadeadaDupla& ListaED){        //funcao responsavel imprimir a lista
+    if(ListaED.inicio == nullptr){                              //se inicio da lista = null
+        cout << "\nA lista escontra-se vazia" << endl << endl;
+    }
+    else{                                                       //se o inicio da lista nao for null
+        int quantidade;                                         //int quantidade, aux para receber quantidade da funcao quantidade
+        quantidade = obter_quantidade_ED(ListaED);                 //quantidade recebe int da obter quantidade
+        int i = 0;                                              //int i = 0, aux
+        cout << endl;
+        for (TJogadorEncadeadoDupla* nav = ListaED.inicio; nav != nullptr && i < quantidade; nav = nav->proximo, i++) {   //for que percorre de 0 Ã¡ (quantidade da lista - j), j tem como funcao diminuir a quantidade da lista para fazer a ordenacao
+            cout << "POSICAO[" << obter_posicao_ListaED(ListaED,nav) << "]: " << "Jogador {ID: " << nav->jogador << " | Game: " << vetGAME[nav->game] << " | Pontuacao: " << nav->pontuacao << "}" << endl; //imprime "Lista[i]: Jogador { id, pontuacao}"
+            //cout << "POSICAO[" << obter_posicao_ListaED(ListaED,nav) << "]: " << "{ID: " << nav << " | Pontuacao: " << nav->pontuacao << "} | Anterior: " << nav->anterior << " | Proximo: " << nav->proximo << endl; //imprime "Lista[i]: Jogador { id, pontuacao}"
+        }
+        cout << endl;
+    }
+}
+
+void preencher_rank10ED(TListaEncadeadaDupla& rank10ED, TListaEncadeadaDupla& ListaED) {    //funcao responsavel em preencher rank10
+    int jogador,game,pontuacao;                                                                 //declara jogador, game e pontuacao
+    for (TJogadorEncadeadoDupla* nav = ListaED.inicio; nav != nullptr; nav = nav->proximo) {   //for que percorre a lista
+        jogador = nav->jogador;                                          //jogador = jogador do novo
+        game = nav->game;                                                //game = game do novo
+        pontuacao = nav->pontuacao;                                      //pontuacao = pontuacao do novo
+        inserir_inicio_na_lista_ED(rank10ED, jogador, game, pontuacao);  //insere valor gerado para inicio da lista do jogador
+    }
+}
+
+void Sort_ED(TListaEncadeadaDupla& rank10ED, int quantidade) {    //funcao para sort top 10
+    bool ordenado = false;                                          //define ordenado como falso
+    int j = 0;                                                      //define j = 0, para aux no for
+    TJogadorEncadeadoDupla jogadorTemp;                           //cria jogadorTemp para receber dados temporarios
+    while (!ordenado) {                                             //repete oenquanto ordenado for falso
+        ordenado = true;    //define ordenado como true
+        j++;
+        int i=0;
+        for (TJogadorEncadeadoDupla* nav = rank10ED.inicio; nav != nullptr && i < quantidade - j; nav = nav->proximo, i++) {   //for que percorre de 0 Ã¡ (quantidade da lista - j), j tem como funcao diminuir a quantidade da lista para fazer a ordenacao
+            if (nav->pontuacao < nav->proximo->pontuacao) {         //se a pontuacao do jogador da lista for menor q a pontuacao do jogador da lista seguinte
+                jogadorTemp.pontuacao = nav->pontuacao;             //pontuacao temp recebe pontuacao do jogador da lista seguinte
+                jogadorTemp.game = nav->game;                       //game temp recebe game do jogador da lista seguinte
+                jogadorTemp.jogador = nav->jogador;                 //jogador temp recebe jogador do jogador da lista seguinte
+                nav->pontuacao = nav->proximo->pontuacao;           //pontuacao do nav = pontuacao do proximo de nav
+                nav->game = nav->proximo->game;                     //game do nav = game do proximo de nav
+                nav->jogador = nav->proximo->jogador;               //pontuacao do nav = pontuacao do proximo de nav
+                nav->proximo->pontuacao = jogadorTemp.pontuacao;    //pontuacao do proximo de nav = pontuacao temp
+                nav->proximo->game = jogadorTemp.game;              //game do proximo de nav = game temp
+                nav->proximo->jogador = jogadorTemp.jogador;        //jogador do proximo de nav = jogador temp
+                ordenado = false;                                   //define ordenado como falso
+            }
+        }
+    }
+    quantidade = obter_quantidade_ED(rank10ED);                        //quantidade = quantidade da lista de rank, aux para remover resto do top10
+    for (int i = quantidade; i>10; i--){                            //for que do fim da lista ate a posicao 11
+        remover_fim_na_lista_ED(rank10ED);                          //remove tudo que nao for top10 ou seja da posicao 11 em diante
+    }
+}
+
+void menuED(){                                                  //menu
+    TListaEncadeadaDupla ListaED;                             //declara ListaED
+    TListaEncadeadaDupla rank10ED;                            //declara rank10ED
+    int menu;
+    inicializar_lista_ED(ListaED);
+    inicializar_lista_ED(rank10ED);
+    do{
+
+        system("cls");
+        cout << "TRABALHO M1 - LISTA ENCADEADA DUPLA" << endl << endl;
+        cout << "01 - ZERAR LISTA" << endl;
+        cout << "02 - GERAR "<< CAPACIDADE << " JOGADORES" << endl;
+        cout << "03 - IMPRIMIR LISTA" << endl;
+        cout << "04 - ORDENAR TOP 10" << endl;
+        cout << "05 - INSERIR NO INICIO DA LISTA" << endl;
+        cout << "06 - INSERIR NO FIM DA LISTA" << endl;
+        cout << "07 - INSERIR NA POSICAO DA LISTA" << endl;
+        cout << "08 - REMOVER DO INICIO DA LISTA" << endl;
+        cout << "09 - REMOVER DO FIM DA LISTA" << endl;
+        cout << "10 - REMOVER DA POSICAO DA LISTA" << endl;
+        cout << "11 - OBTER ITEM DA LISTA" << endl;
+        cout << "12 - CONTEM ITEM DA LISTA" << endl;
+        cout << "13 - DESCOBRIR ITEM NA LISTA" << endl;
+        cout << "14 - OBTER QUANTIDADE DE ITENS DA LISTA" << endl;
+        cout << "00 - PARA SAIR" << endl << "-> ";
+        cin >> menu;
+
+        int quantidadeLista = obter_quantidade_ED(ListaED);            //quantidadeLista recebe a quantidadae da ListaED
+        int jogador, game, pontuacao, pos;
+        switch (menu) {
+        case 1:
+
+            system("cls");                      //visual, limpa tela do terminal
+            inicializar_lista_ED(ListaED);      //zera lista
+            inicializar_lista_ED(rank10ED);     //zera rank10ED
+            cout << "LISTA ZERADA" << endl;     //imprime "LISTA ZERADA"
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 2:
+
+            system("cls");                      //visual, limpa tela do terminal
+            inicializar_lista_ED(ListaED);      //zera lista
+            inicializar_lista_ED(rank10ED);     //zera rank10ED
+            preencher_lista_ED(ListaED);        //preenche lista com valores aletatorios
+            cout << "GERADO" << endl << endl;   //imprime "GERADO"
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 3:
+
+            system("cls");                      //visual, limpa tela do terminal
+            cout << "IMPRIMIR LISTA DE JOGADORES" << endl;
+            imprimir_lista_ED(ListaED);         //imprime lista na tela
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 4:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "IMPRIMIR RANK TOP 10" << endl;
+            if (obter_quantidade_ED(ListaED) < 10){    //se quantidade da lista for menor q 10
+                cout << "\nNao ha valores suficientes para TOP 10!" << endl << endl;  //imprime "Nao ha valores suficientes para TOP 10!"
+                system("pause");                    //visual, pausa terminal
+                system("cls");                      //visual, limpa tela do terminal
+                break;
+            }
+            preencher_rank10ED(rank10ED, ListaED);  //rank 10 recebe valores da lista
+            Sort_ED(rank10ED,quantidadeLista);      //Sort_ED_ES recebe rank10ED e ordena em top10
+            imprimir_lista_ED(rank10ED);            //imprime rank10ED
+            system("pause");                        //visual, pausa terminal
+            system("cls");                          //visual, limpa tela do terminal
+            break;                                  //sai do case, e volta pro menu
+
+        case 5:
+
+            system("cls");                      //visual, limpa tela do terminal
+            cout << "INSERIR NO INICIO DA LISTA" << endl;
+            cout << "Digite o jogador: ";
+            cin >> jogador;                     //recebe o valor digitado a ser inserido no inicio da lista
+            cout << "Digite o game: ";
+            cin >> game;                        //recebe o valor digitado a ser inserido no inicio da lista
+            if(game > 5){                       //se game do jogador digitado for maior q 5
+                cout << "Game digitado nao existe" << endl;
+                system("pause");                //visual, pausa terminal
+                break;                          //sai da case, e volta pro menu
+            }
+            cout << "Digite a pontuacao: ";
+            cin >> pontuacao;                   //recebe o valor digitado a ser inserido no inicio da lista
+            inserir_inicio_na_lista_ED(ListaED, jogador, game, pontuacao); //insere na lista os jogadors digitados no inicio da lista
+            imprimir_lista_ED(ListaED);         //imprime lista na tela
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 6:
+
+            system("cls");                      //visual, limpa tela do terminal
+            cout << "INSERIR NO FIM DA LISTA" << endl;
+            cout << "Digite o jogador: ";
+            cin >> jogador;                     //recebe o valor digitado a ser inserido no inicio da lista
+            cout << "Digite o game: ";
+            cin >> game;                        //recebe o valor digitado a ser inserido no inicio da lista
+            if(game > 5){                       //se game do jogador digitado for maior q 5
+                cout << "Game digitado nao existe" << endl;
+                system("pause");                //visual, pausa terminal
+                break;                          //sai da case, e volta pro menu
+            }
+            cout << "Digite a pontuacao: ";
+            cin >> pontuacao;                   //recebe o valor digitado a ser inserido no fim da lista
+            inserir_fim_na_lista_ED(ListaED, jogador, game, pontuacao);  //insere na lista os dados digitados no fim da lista
+            imprimir_lista_ED(ListaED);         //imprime lista na tela
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 7:
+
+            system("cls");                      //visual, limpa tela do terminal
+            cout << "INSERIR NA POSICAO DA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){
+                cout << "Lista vazia!" << endl;
+                cout << "Sera inserido no inicio." << endl;
+                pos = 0;
+            }else{
+                cout << "Digite a posicao a ser inserida (0 a " << quantidadeLista << "): ";
+                cin >> pos;                     //recebe posicao digitada
+            }
+            cout << "Digite o jogador: ";
+            cin >> jogador;                     //recebe o valor digitado a ser inserido no inicio da lista
+            cout << "Digite o game: ";
+            cin >> game;                        //recebe o valor digitado a ser inserido no inicio da lista
+            if(game > 5){                       //se game do jogador digitado for maior q 5
+                cout << "Game digitado nao existe" << endl;
+                system("pause");                //visual, pausa terminal
+                break;                          //sai da case, e volta pro menu
+            }
+            cout << "Digite a pontuacao: ";
+            cin >> pontuacao;
+            inserir_posicao_na_lista_ED(ListaED, jogador, game, pontuacao, pos);   //insere na lista os dados digitados na posicao digitada
+            imprimir_lista_ED(ListaED);         //imprime lista na tela
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 8:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "REMOVER DO INICIO DA LISTA" << endl << endl;
+            remover_inicio_na_lista_ED(ListaED);    //remove do inicio lista
+            imprimir_lista_ED(ListaED);             //imprime lista na tela
+            system("pause");                        //visual, pausa terminal
+            system("cls");                          //visual, limpa tela do terminal
+            break;                                  //sai do case, e volta pro menu
+
+        case 9:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "REMOVER DO FIM DA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){          //se inicio da lista = null, ou seja lista vazia
+                cout << "Lista vazia!" << endl;
+                system("pause");                    //visual, pausa terminal
+                system("cls");                      //visual, limpa tela do terminal
+                break;
+            }
+            remover_fim_na_lista_ED(ListaED);       //remove da lista os dados digitados na posicao digitada
+            imprimir_lista_ED(ListaED);             //imprime lista na tela
+            system("pause");                        //visual, pausa terminal
+            system("cls");                          //visual, limpa tela do terminal
+            break;                                  //sai do case, e volta pro menu
+
+        case 10:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "REMOVER DA POSICAO DA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){          //se inicio da lista = null, ou seja lista vazia
+                cout << "Lista vazia!" << endl;
+                system("pause");                    //visual, pausa terminal
+                system("cls");                      //visual, limpa tela do terminal
+                break;                              //sai do case, e volta pro menu
+            }
+            cout << "Digite a posicao a ser removida (0 a " << quantidadeLista-1 << "): ";
+            cin >> pos;
+            remover_posicao_na_lista_ED(ListaED, pos);  //remove da lista os dados digitados na posicao digitada
+            imprimir_lista_ED(ListaED);                 //imprime lista na tela
+            system("pause");                            //visual, pausa terminal
+            system("cls");                              //visual, limpa tela do terminal
+            break;                                      //sai do case, e volta pro menu
+
+        case 11:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "OBTER ITEM DA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){          //se inicio da lista = null, ou seja lista vazia
+                cout << "Lista vazia!" << endl;
+                system("pause");                    //visual, pausa terminal
+                system("cls");                      //visual, limpa tela do terminal
+                break;
+            }
+            cout << "Digite a posicao a ser obtida (0 a " << quantidadeLista-1 << "): ";
+            cin >> pos;
+            pontuacao = obter_item_da_lista_ED(ListaED,pos);    //pontuacao recebe item da lista referente a posicao digitada
+            if(pontuacao == -1){                        //se pontuacao = -1
+                cout << "Posicao Invalida!" << endl;
+                system("pause");                        //visual, pausa terminal
+                system("cls");                          //visual, limpa tela do terminal
+                break;
+            }
+            cout << endl <<  "Posicao[" << pos << "] - " << "Pontuacao: {" << pontuacao << "}" << endl; //imprime "Lista[i]: TJogador { game, pontuacao}"
+            system("pause");                            //visual, pausa terminal
+            system("cls");                              //visual, limpa tela do terminal
+            break;                                      //sai do case, e volta pro menu
+
+        case 12:
+
+            system("cls");                          //visual, limpa tela do terminal
+            cout << "CONTEM ITEM NA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){          //se inicio da lista = null, ou seja lista vazia
+                cout << "Lista vazia!" << endl;
+                system("pause");                    //visual, pausa terminal
+                system("cls");                      //visual, limpa tela do terminal
+                break;                              //sai do case, e volta pro menu
+            }
+            cout << "Digite a pontuacao: ";
+            cin >> pontuacao;
+            if(contem_item_lista_ED(ListaED,pontuacao) == true){  //se contem item da lista = true, imprime contem na lista
+                cout << endl << "Esse jogador contem na lista!" << endl;
+                cout << endl <<  "Posicao[" << pos << "] - " << "Pontuacao: {" << pontuacao << "}" << endl;
+            }else{
+                cout << endl << "Nao contem na lista." << endl << endl;
+            }
+            system("pause");                    //visual, pausa terminal
+            system("cls");                      //visual, limpa tela do terminal
+            break;                              //sai do case, e volta pro menu
+
+        case 13:
+
+            system("cls");                      //visual, limpa tela do terminal
+            cout << "DESCOBRIR ITEM NA LISTA" << endl << endl;
+            if(ListaED.inicio == nullptr){      //se inicio da lista = null, ou seja lista vazia
+                cout << "Lista vazia!" << endl;
+                system("pause");                //visual, pausa terminal
+                system("cls");                  //visual, limpa tela do terminal
+                break;                          //sai do case, e volta pro menu
+            }
+            cout << "Digite a pontuacao: ";
+            cin >> pontuacao;
+            int i;
+            i = descobrir_indice_lista_ED(ListaED,pontuacao);    //i recebe posicao do vetor da lista q possui dados iguais ao digitado
+            if(i == -1){
+                cout << endl << "Nao contem na lista." << endl;
+            }else{
+                cout << endl << "Esse jogador contem na lista!" << endl;
+                cout << endl <<  "Posicao[" << pos << "] - " << "Pontuacao: {" << pontuacao << "}" << endl;
+            }
+            system("pause");                                    //visual, pausa terminal
+            system("cls");                                      //visual, limpa tela do terminal
+            break;                                              //sai do case, e volta pro menu
+
+        case 14:
+
+            system("cls");                              //visual, limpa tela do terminal
+            cout << "OBTER QUANTIDADE DE ITENS DA LISTA" << endl;
+            cout << obter_quantidade_ED(ListaED) << endl;  //imprime quantidade da ListaED
+            system("pause");                            //visual, pausa terminal
+            system("cls");                              //visual, limpa tela do terminal
+            break;                                      //sai do case, e volta pro menu
+
+        default:                                        //case default serve para caso o usuario digite valores q nao possuem case
+            menu = 0;                                   //define menu = 0 para o programa terminar
+            break;                                      //sai do case, e volta pro menu
+        }
+    }while(menu >= 1 && menu <= 14);                    //repeticao do menu para cases, caso menu seja diferente dessas posicoes, programa encerra
+}
+
+void sem_menuED(){
+
+    TListaEncadeadaDupla *rank10ED = new TListaEncadeadaDupla;  //aloca dinamicamente a lista rank10ED
+    TListaEncadeadaDupla *ListaED = new TListaEncadeadaDupla;   //aloca dinamicamente a lista ListaED
+    system("cls");
+    cout << "TRABALHO M1 - LISTA ENCADEADA DUPLA" << endl << endl;
+    inicializar_lista_ED(*ListaED);                      //inicializa lista lista, zera a quantidade
+    inicializar_lista_ED(*rank10ED);                     //inicaaliza lista rank10, zera a quantidade
+    preencher_lista_ED(*ListaED);                        //preenche lista com valores aletatorios
+    cout << "LISTA GERAL" << endl;                      //imprime lista geral
+    imprimir_lista_ED(*ListaED);                         //imprime lista na tela
+    preencher_rank10ED(*rank10ED, *ListaED);              //rank 10 recebe valores da lista
+    int quantidadeLista = obter_quantidade_ED(*ListaED);    //quantidadeLista recebe a quantidadae da ListaED
+    Sort_ED(*rank10ED,quantidadeLista);                  //Sort_ED_ES recebe rank10ED e ordena em top10
+    cout << "LISTA TOP 10" << endl;                     //imprime lista geral
+    imprimir_lista_ED(*rank10ED);                        //imprime rank10
+    delete ListaED;                                     //deleta alocacao dinamica da lista
+    delete rank10ED;                                    //deleta alocacao dinamica do rank
+}
+
+int main() {
+////////////////////////////// LISTA ENCADEADA DUPLA ///////////////////////////////////////////////////////
+    //menuED();       //menu visual, para utilizar funcoes do codigo
+    sem_menuED();     //sem menu, inicializa lista, preenche, imprime, preenche rank10 e imprime
+    return 0;
+}
