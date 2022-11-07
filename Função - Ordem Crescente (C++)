@@ -1,0 +1,32 @@
+#include <iostream>
+
+using namespace std;
+
+// função que leia 2 números e os escreva em ordem crescente separados por vírgula
+
+int numerosOrdemCrescente(int num1, int num2) {
+    
+    if(num1 < num2){
+        cout << num1 << " , " << num2 << endl;
+    } else {
+        cout << num2 << " , " << num1 << endl;
+    }
+
+}
+
+int main()
+{
+    int num1;
+    int num2;
+    
+    cout<<"Insira o primeiro numero: " << endl;
+    cin>> num1;
+    
+    cout<<"Insira o segundo numero: " << endl;
+    cin>> num2;
+    
+    cout << "Numero em ordem crescente:" << endl;
+    numerosOrdemCrescente(num1, num2); 
+
+    return 0;
+}
