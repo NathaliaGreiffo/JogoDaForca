@@ -1,0 +1,20 @@
+open System
+
+let escreveEmOrdemCrescente num1 num2 =
+  let verificaSeNum1Menor =
+    num1 < num2
+  let escreveCrescente num1 num2 =
+    printfn "%i , %i" num1 num2
+  let escreveNovoCrescente num1 num2 =
+    printfn "%i , %i" num2 num1
+
+  if verificaSeNum1Menor then
+    escreveCrescente num1 num2
+  else
+    escreveNovoCrescente num1 num2
+
+[<EntryPoint>]
+let main argv =
+    escreveEmOrdemCrescente 13 22 
+
+    0
