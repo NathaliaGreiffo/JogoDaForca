@@ -1,0 +1,304 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+
+#define TAM 256 //para a tabela ASCII
+
+typedef struct no{
+    unsigned char caracter;
+    int frequencia;
+    struct no *esq, *dir, *proximo;
+}No;
+
+typedef struct{
+    No *inicio;
+    int tam;
+}Lista;
+
+// Tabela de frequencia: contar a ocorrencia de cada caracter no texto que queremos imprimir
+void inicializa_tabela_com_zero(unsigned int tab[]){
+    int i;
+    for(i = 0; i < TAM; i++)
+        tab[i] = 0;
+}
+
+void preenche_tab_frequencia(unsigned char texto[], unsigned int tab[]){
+    int i = 0;
+
+    while(texto[i] != '\0'){ // é o que indica o final de uma string
+        tab[texto[i]]++; // acessando o vetor
+        i++;
+    }
+}
+
+void imprime_tab_frequencia(unsigned int tab[]){
+    int i;
+
+    printf("\tTABELA DE FREQUENCIA\n");
+    for(i = 0; i < TAM; i++){
+        if(tab[i] > 0)
+            printf("\nCOD. ASCII || FREQUENCIA || CARACTERER\n    %3d    ||  %2u        ||    '%c'\n", i, tab[i], i);
+    }
+}
+
+// Gerar a lista com os nós da ávore: dessa fila, vamos removendo os elementos e montando a arvore
+
+void criar_lista(Lista *lista){
+    lista->inicio = NULL;
+    lista->tam = 0;
+}
+
+void inserir_ordenado(Lista *lista, No *no){
+    No *aux;
+    //a lista está vazia? se sim o no fica em primeiro
+    if(lista->inicio == NULL){
+        lista->inicio = no; // inserimos o no
+    // Pode ser que a lista nao esteja vaiza ou seja tem frequencia menor que o inicio da lista, ou seja ele tbm pode ser o primeiro
+    }
+    // tem frequência menor que o início da lista
+    else if(no->frequencia < lista->inicio->frequencia){
+        no->proximo = lista->inicio;
+        lista->inicio = no;
+    }
+    else{ //inserção no meio, ou no final, percorremos e encontramos onde vamos inserir esse nó
+        aux = lista->inicio;
+        while(aux->proximo && aux->proximo->frequencia <= no->frequencia) //verificamos a frequencia do proximo nó, e eu quero descobrir se ela é menor ou ingual a frequencia do nó que estamos inserindo
+            aux = aux->proximo;
+        no->proximo = aux->proximo;
+        aux->proximo = no;
+    }
+    lista->tam++;
+}
+
+void preencher_lista(unsigned int tab[], Lista *lista){
+    int i;
+    No *novo;
+    for(i = 0; i < TAM; i++){
+        if(tab[i] > 0){ // se a posicao for maior que zero podemos fazer algo
+            novo = malloc(sizeof(No));
+            if(novo){ //prenecher o nosso no
+                novo->caracter = i;
+                novo->frequencia = tab[i];
+                novo->dir = NULL;
+                novo->esq = NULL;
+                novo->proximo = NULL;
+
+                inserir_ordenado(lista, novo);
+            }
+            else{
+                printf("\tNão foi possivel alocar memoria em preencher_lista!\n");
+                break;
+            }
+        }
+    }
+}
+
+void imprimir_lista(Lista *lista){
+    No *aux = lista->inicio;
+
+    printf("\nLista ordenada: Tamanho: %d\n", lista->tam);
+    while(aux){
+        printf("Caracter: [%c] Frequência: %d\n", aux->caracter, aux->frequencia);
+        aux = aux->proximo;
+    }
+}
+
+// Montar a arvore de huffman: remover os nos da lista e montar a arvore
+
+No* remove_no_inicio(Lista *lista){
+    No *aux = NULL;
+
+    if(lista->inicio){
+        aux = lista->inicio;
+        lista->inicio = aux->proximo;
+        aux->proximo = NULL;
+        lista->tam--;
+    }
+
+    return aux;
+}
+
+No* montar_arvore(Lista *lista){
+    No *primeiro, *segundo, *novo;
+    while(lista->tam > 1){ // removemos de dois em dois
+        primeiro = remove_no_inicio(lista);
+        segundo = remove_no_inicio(lista);
+        novo = malloc(sizeof(No));
+
+        if(novo){ //alocar memoria
+            novo->caracter = '+'; //no intermediario, indiferente
+            novo->frequencia = primeiro->frequencia + segundo->frequencia;
+            novo->esq = primeiro;
+            novo->dir = segundo;
+            novo->proximo = NULL;
+
+            inserir_ordenado(lista, novo);
+        }
+        else{
+            printf("\n\tNão foi possivel alocar memoria em montar_arvore!\n");
+            break;
+        }
+    }
+    return lista->inicio;
+}
+
+void imprimir_arvore(No *raiz, int tam){
+    if(raiz->esq == NULL && raiz->dir == NULL) //tem que ser folha
+        printf("Folha: %c\tAltura: %d\n", raiz->caracter, tam);
+    else{ // se não é uma folha, temos uma sub arvore a esquerda e uma sub arvore a esquerda
+        imprimir_arvore(raiz->esq, tam + 1);
+        imprimir_arvore(raiz->dir, tam + 1);
+    }
+}
+
+// Montar o dicionário: percorrer toda a nossa arvore, atingindo todas as folhas e gerando o dicionario
+    // DICIONÁRIO = tabela que mapeia cada simbolo para um codigo binario especifico - exemplo.: v=0001
+
+int altura_arvore(No *raiz){
+    int esq, dir;
+
+    if(raiz == NULL) //chegamos em uma folha
+        return -1;
+    else{
+        esq = altura_arvore(raiz->esq) + 1;
+        dir = altura_arvore(raiz->dir) + 1;
+
+        if(esq > dir)
+            return esq;
+        else
+            return dir;
+    }
+}
+
+char** aloca_dicionario(int colunas){
+    char **dicionario;
+    int i;
+
+    dicionario = malloc(sizeof(char*) * TAM); //aloca a memoria e me retorna aquele ponteiro
+
+    for(i = 0; i < TAM; i++)
+        dicionario[i] = calloc(colunas, sizeof(char)); // aloca uma regiao de memoria e limpa a memoria, e retorna o ponteiro dessa memoria
+
+    return dicionario;
+}
+
+// Temos uma matriz de caracteres vazia, a raiz da nossa arvore e um caminho que no incio sera vazio, e a quantidade de colunas que tera a nossa matriz
+void gerar_dicionario(char **dicionario, No *raiz, char *caminho, int colunas){
+    char esquerda[colunas], direita[colunas];
+
+    if(raiz->esq == NULL && raiz->dir == NULL) //eu estou em uma folha?
+    //strcpy copia um determinado texto para outro determinado vetor de caracteres
+        strcpy(dicionario[raiz->caracter], caminho); // se eu estiver em uma folha, eu vou NESSA linha do dicionario e vou salvar esse caminho la
+    else{ // se não folha uma folha, é aqui que vamos montar o caminho
+        strcpy(esquerda, caminho); // caminho chegou vazio da primeira vez, eu copio para a esquerda e para a direita
+        strcpy(direita, caminho);
+        // strcat contatena duas strings
+        strcat(esquerda, "0"); //quando eu for para a esquerda eu vou juntar um 0
+        strcat(direita, "1"); //quando eu for para a direita eu vou juntar um 1
+
+        gerar_dicionario(dicionario, raiz->esq, esquerda, colunas);
+        gerar_dicionario(dicionario, raiz->dir, direita, colunas);
+    }
+}
+
+void imprime_dicionario(char **dicionario){
+    int i;
+
+    printf("\nDICIONARIO:\n");
+    for(i = 0; i < TAM; i++){
+        if(strlen(dicionario[i]) > 0)
+            printf("%3d: %s\n", i, dicionario[i]);
+    }
+}
+
+// parte 5) Codificar o texto: percorrer o texto originaL, cada simbolo do texto original visita o dicionario e pega o codigo para aquele simbolo;
+int calcula_tamanho_string(char **dicionario, unsigned char *texto){ // quantos caracteres eu precisop para guardar esse texto codificado
+    int i = 0, tam = 0;
+    while(texto[i] != '\0'){
+        tam = tam + strlen(dicionario[texto[i]]); //eu quero descobrir o tamanho dessa string texto
+        i++;
+    }
+    return tam + 1; // somamos mais um pois preciso contar tbm o caracter de fim de string
+}
+
+char* codificar(char **dicionario, unsigned char *texto){
+
+    int i = 0, tam = calcula_tamanho_string(dicionario, texto);
+    char *codigo = calloc(tam, sizeof(char));
+
+    while(texto[i] != '\0'){
+        strcat(codigo, dicionario[texto[i]]); // eu pego a string que temos no texto e concateno com o codigo
+        i++;
+    }
+    return codigo;
+}
+
+// parte 6) Decodificar o texto: cada bit percorre a arvore até chegar em uma folha, ou seja determina o caracter
+char* decodificar(unsigned char texto[], No *raiz){
+    int i = 0;
+    No *aux = raiz;
+    char temp[2];
+    char *decodificado = calloc(strlen(texto), sizeof(char));
+
+    while(texto[i] != '\0'){
+        if(texto[i] == '0')
+            aux = aux->esq; // é um zero? vou para esquerda
+        else
+            aux = aux->dir; //não é um zero? vou para a direita então
+
+        if(aux->esq == NULL && aux->dir == NULL){ // significa que aux é uma folha
+            temp[0] = aux->caracter;
+            temp[1] = '\0'; // caracter que indica o final da string
+            strcat(decodificado, temp);
+            aux = raiz;
+        }
+
+        i++;
+    }
+    return decodificado;
+}
+
+int main() {
+
+    unsigned char texto[] = "Eduardo"; //unsigned é usado para utilizar os valores positivos
+    unsigned int tabela_frequencia[TAM];
+    Lista lista;
+    No *arvore;
+    int colunas;
+    char **dicionario;
+    char *codificado, *decodificado;
+
+    setlocale(LC_ALL, "Portuguese");
+
+    //----------- tabela de frequência ---------------
+    inicializa_tabela_com_zero(tabela_frequencia);
+    preenche_tab_frequencia(texto, tabela_frequencia);
+    imprime_tab_frequencia(tabela_frequencia);
+
+    //----------- Lista Encadeada Ordenada -----------
+    criar_lista(&lista);
+    preencher_lista(tabela_frequencia, &lista);
+    imprimir_lista(&lista);
+
+    //----------- Árvore de Huffman ---------
+    arvore = montar_arvore(&lista);
+    printf("\nARVORE DE HUFFMAN: \n");
+    imprimir_arvore(arvore, 0);
+
+    //----------- Dicionário ----------------
+    colunas = altura_arvore(arvore) + 1;
+    dicionario = aloca_dicionario(colunas);
+    gerar_dicionario(dicionario, arvore, "", colunas);
+    imprime_dicionario(dicionario);
+
+    //----------- Codificar ---------------------------
+    codificado = codificar(dicionario, texto);
+    printf("\nTEXTO CODIFICADO: %s\n", codificado);
+
+    //----------- Decodificar -------------------------
+    decodificado = decodificar(codificado, arvore);
+    printf("\nTEXTO DECODIFICADO: %s\n", decodificado);
+
+    return 0;
+}
